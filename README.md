@@ -2,16 +2,21 @@
 
 ### 프로젝트 기간 : 2/19(월) ~ 2/25 (일)
 ### 과제 결과물 마감 기한 : 2/25 (일) 23:59 / LMS 제출을 기준으로 합니다.
-### 자세한 사항은 [RFP](링크수정예정) 참고 부탁드립니다.
+### 자세한 사항은 [RFP](https://drive.google.com/drive/folders/1pQ_jHrTAIp_qhoSlVtRZ77EkIild78JE) 참고 부탁드립니다.
 
 ### 프로젝트 설명 (수정 예정)
-- [RFP](링크수정예정)를 기반으로 팀별로 결과물을 작업하여 제출하시오. 
-- 달성 목표: Spring Legacy 기반 프로젝트, DB 설계, DB 트랜잭션, RESTful API 설계
-  - 여행의 여정 정보를 기록하고 조회하는 Spring Legacy기반 RESTful API 개발
-  - 진행한 여행, 여정 정보를 조회, 등록 수정하기 위한 ERD 설계 및 개발			
-  - 여행과 여정 정보를 조회, 등록, 수정하기 위한 RESTful API 설계/개발
-  - 진행한 여행, 여정 정보를 조회, 등록 수정 후 저장
-  - 일정 정보 중 일시(Date, Time) 정보를 생성할 수 있는 공통 유틸리티 클래스 제공
+- [RFP](https://drive.google.com/drive/folders/1pQ_jHrTAIp_qhoSlVtRZ77EkIild78JE)를 기반으로 팀별로 결과물을 작업하여 제출하시오. 
+- 3단계 달성 목표 : Spring Security, JUnit, Openapi 활용
+  - 여행의 여정 정보를 기록하고 조회하는 [ToyProject 2단계] RESTful API 고도화
+  - Spring Security 를 활용할 수 있도록, 사용자 테이블 추가 설계
+  - Spring Security 기반 인증/인가 구현
+  - MyBatis 또는 JPA를 활용하여 데이터베이스 연동
+  - 타인의 여행정보에 좋아요, 댓글 기능 구현
+  - 내가 ‘좋아요’ 누른 여행에 대한 목록 조회 기능 구현
+  - 전체 여행 중 검색어에 맞는 여행 정보 조회(=검색) 기능 구현
+  - 레이어 별 (Repository, Service, Controller) 테스트케이스 작성
+  - 네이버맵, 카카오맵, 구글맵 API 활용하여 위치 정보 표현
+
 
   
 ### 프로젝트 진행 및 제출 방법
