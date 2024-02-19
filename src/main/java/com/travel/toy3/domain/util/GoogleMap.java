@@ -3,7 +3,6 @@ package com.travel.toy3.domain.util;
 import lombok.*;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
