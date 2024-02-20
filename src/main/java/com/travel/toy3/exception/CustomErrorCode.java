@@ -30,7 +30,11 @@ public enum CustomErrorCode {
     NO_EDIT_PERMISSION("수정 권한이 없습니다. 본인이 작성한 정보만 수정이 가능합니다."),
 
     // 안내가 필요한 경우
-    EMPTY_LIKE_LIST("아직 좋아요를 누르신 여행 정보가 없습니다.");
+    EMPTY_LIKE_LIST("아직 좋아요를 누르신 여행 정보가 없습니다."),
+
+    // 우리가 정의한 예외가 아닌 경우
+    INTERNAL_SERVER_ERROR("서버에 오류가 발생했습니다."),
+    INVALID_REQUEST("잘못된 요청입니다.");
 
     private final String message;
 }
