@@ -1,4 +1,4 @@
-package com.travel.toy3.domain.util;
+package com.travel.toy3.util;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

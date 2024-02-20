@@ -1,4 +1,4 @@
-package com.travel.toy3.domain.util;
+package com.travel.toy3.util;
 
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
