@@ -3,6 +3,7 @@ package com.travel.toy3.domain.trip.dto;
 import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.trip.entity.Like;
 import com.travel.toy3.domain.trip.entity.Trip;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class LikeDTO {
@@ -14,9 +15,9 @@ public class LikeDTO {
     @Builder
     @ToString
     public static class likeRequest {
-        @NonNull
+        @NotNull
         private Long memberId;
-        @NonNull
+        @NotNull
         private Integer tripId;
         private Integer likeCount;
     }
@@ -27,19 +28,19 @@ public class LikeDTO {
     @Builder
     @ToString
     public static class likeResponse{
-        @NonNull
+        @NotNull
         private Long memberId;
-        @NonNull
+        @NotNull
         private Integer tripId;
         private Integer likeCount;
 
-        public static likeResponse fromLikeEntity(@NonNull Member member, @NonNull Trip trip, Like like){
-            return likeResponse.builder()
-                    .memberId(member.getMemberId())
-                    .tripId(trip.getTripId())
-                    .likeCount(like.getLikeId())
-                    .build();
-        }
+//        public static likeResponse fromLikeEntity(@NonNull Member member, @NonNull Trip trip, Like like){
+//            return likeResponse.builder()
+//                    .memberId(member.getMemberId())
+//                    .tripId(trip.getTripId())
+//                    .likeCount(like.getLikeId())
+//                    .build();
+//        }
     }
 
 }

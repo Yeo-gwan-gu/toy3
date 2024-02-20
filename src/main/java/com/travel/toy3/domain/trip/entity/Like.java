@@ -19,20 +19,17 @@ public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_id")
-    private Long likeId; // 좋아요 id
+    private Long id; // 좋아요 id
 
 //    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "member_id")
-//    private Member member; // 좋아요 누른 사용자
+//    private Member memberId; // 좋아요 누른 사용자
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "trip_id")
-    private Trip trip; // 여행 id
+    private Trip tripId; // 여행 id
 
     @CreatedDate
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
 }
