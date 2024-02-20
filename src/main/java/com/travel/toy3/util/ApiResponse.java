@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApiResponse<T> {
     // HttpStatus
-    private String resultCode;
+    private Integer resultCode;
     private String resultMessage;
 
     // CustomErrorCode의 message
