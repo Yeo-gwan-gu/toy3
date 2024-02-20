@@ -18,3 +18,6 @@ spring:
     show-sql: 'true'
 server:
   port: '8081'
+google:
+  geocoding:
+    api-key: AIzaSyB5cS1pz0Huis5Vtjet9O3cK0A9GFmyRMk
