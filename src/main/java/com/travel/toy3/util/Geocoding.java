@@ -1,4 +1,4 @@
-package com.travel.toy3.domain.util;
+package com.travel.toy3.util;
 
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
@@ -22,7 +22,7 @@ public class Geocoding {
         this.apiKey = properties.getApiKey();
     }
 
-    public static GoogleMap getGeoInfo(String address) throws IOException { // ex. 서울특별시 강남구 삼성동 OR 삼성동
+    public static GoogleMap getGeoInfo(String address) throws IOException { // ex. 서울특별시 강남구 강남대로 364
         String url = BASE_URL + "?address=" + address + "&key=" + apiKey;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
