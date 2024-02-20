@@ -1,4 +1,40 @@
 package com.travel.toy3.exception;
 
+import com.travel.toy3.util.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static com.travel.toy3.exception.CustomErrorCode.BAD_REQUEST;
+import static com.travel.toy3.exception.CustomErrorCode.INTERNAL_SERVER_ERROR;
+
+@Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class, MethodArgumentNotValidException.class})
+    public ApiResponse handleBadRequest(
+            Exception e, HttpServletRequest request
+    ) {
+        log.error("url : {}, message : {}", request.getRequestURI(), e.getMessage());
+
+        return ApiResponse.builder()
+                .resultCode(BAD_REQUEST.getCode()) // 401
+                .errorMessage(BAD_REQUEST.getMessage()) // 잘못된 요청입니다.
+                .build();
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ApiResponse handleException(
+            Exception e, HttpServletRequest request
+    ) {
+        log.error("url : {}, message : {}", request.getRequestURI(), e.getMessage());
+
+        return ApiResponse.builder()
+                .resultCode(INTERNAL_SERVER_ERROR.getCode()) // 501
+                .resultMessage(INTERNAL_SERVER_ERROR.getMessage()) // 서버에 오류가 발생했습니다.
+                .build();
+    }
 }
