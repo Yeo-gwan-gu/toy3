@@ -30,4 +30,9 @@ public class Like {
     @JoinColumn(name = "trip_id")
     private Trip trip; // 여행 id
 
+    @CreatedDate
+    private LocalDateTime createAt;
+    @LastModifiedDate
+    private LocalDateTime updateAt;
+
 }
