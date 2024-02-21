@@ -1,9 +1,6 @@
 package com.travel.toy3.domain.itinerary.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,17 +13,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Itinerary {
+public class Stay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 여정 id (PK)
+    private Long id; // 체류 id (PK)
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "tripId")
-//    private Trip trip; // 여행 테이블과 관계 설정 -> 여행 id(FK)
+    @ManyToOne
+    @JoinColumn(name = "itineraryId")
+    private Itinerary itinerary; // 여정 테이블과 관계 설정 -> 여정 id (FK)
 
-    private Integer itineraryType; // 여정 타입
-    private String itineraryName; // 여정 이름
+    private String stayPlaceName; // 장소명
+    private Double stayPlaceLatitude; // 장소 위도
+    private Double stayPlaceLongitude; // 장소 경도
+    private LocalDateTime arrivalDatetime; // 도착 일시
+    private LocalDateTime departureDatetime; // 출발 일시
 
     @CreatedDate
     private LocalDateTime createdAt;
