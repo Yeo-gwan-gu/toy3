@@ -15,14 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "`like`")
 public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 좋아요 id
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    private Member memberId; // 좋아요 누른 사용자
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Member memberId; // 좋아요 누른 사용자
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Trip tripId; // 여행 id
