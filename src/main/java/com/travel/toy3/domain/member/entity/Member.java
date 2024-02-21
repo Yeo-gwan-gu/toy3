@@ -34,4 +34,10 @@ public class Member {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public Member(String username, String password, String uname) {
+        this.username = username;
+        this.password = password;
+        this.uname = uname;
+    }
 }
