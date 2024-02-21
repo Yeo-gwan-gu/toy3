@@ -25,8 +25,8 @@ public class Accommodation {
     private String accommodationName; // 숙소명
     private Double accommodationPlaceLatitude; // 숙소 위도
     private Double accommodationPlaceLongitude; // 숙소 경도
-    private LocalDateTime departureDatetime; // 출발 일시
-    private LocalDateTime arrivalDatetime; // 도착 일시
+    private LocalDateTime checkIn; // 체크인 일시
+    private LocalDateTime checkOut; // 체크아웃 일시
 
     @CreatedDate
     private LocalDateTime createdAt;
