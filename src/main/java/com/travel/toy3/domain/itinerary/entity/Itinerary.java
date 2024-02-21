@@ -1,9 +1,7 @@
 package com.travel.toy3.domain.itinerary.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.travel.toy3.domain.itinerary.type.ItineraryType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +23,8 @@ public class Itinerary {
 //    @JoinColumn(name = "tripId")
 //    private Trip trip; // 여행 테이블과 관계 설정 -> 여행 id(FK)
 
-    private Integer itineraryType; // 여정 타입
+    @Enumerated(EnumType.STRING)
+    private ItineraryType itineraryType; // 여정 타입
     private String itineraryName; // 여정 이름
 
     @CreatedDate
