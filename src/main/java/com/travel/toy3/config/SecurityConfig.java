@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/signin", "/check", "/api/members/join").permitAll()
+                        .requestMatchers("/signin","/signout", "/check", "/api/members/join").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin().disable() // form Login 비활성화
