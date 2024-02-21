@@ -1,4 +1,38 @@
 package com.travel.toy3.domain.trip.entity;
 
+import com.travel.toy3.domain.member.entity.Member;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Trip {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // 여행 id
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "memberId")
+    private Member member;
+
+    private String tripName; // 여행 이름
+    private LocalDate tripDepartureDate; // 여행 출발 날짜
+    private LocalDate tripArrivalDate; // 여행 도착 날짜
+    private String tripDestination; // 여행지
+    private Boolean isDomestic; // 국내외 여부
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
