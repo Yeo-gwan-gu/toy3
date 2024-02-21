@@ -22,7 +22,7 @@ public class Accommodation {
     @JoinColumn(name = "itineraryId")
     private Itinerary itinerary; // 여정 테이블과 관계 설정 -> 여정 id (FK)
 
-    private String accommodationName; // 숙소명
+    private String accommodationPlaceName; // 숙소명
     private Double accommodationPlaceLatitude; // 숙소 위도
     private Double accommodationPlaceLongitude; // 숙소 경도
     private LocalDateTime checkIn; // 체크인 일시
