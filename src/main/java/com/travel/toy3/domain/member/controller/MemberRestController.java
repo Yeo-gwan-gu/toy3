@@ -1,10 +1,11 @@
 package com.travel.toy3.domain.member.controller;
 
 import com.travel.toy3.domain.member.dto.MemberDTO;
-import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
