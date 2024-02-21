@@ -29,7 +29,9 @@ public class MemberRestController {
     // 회원가입
     @PostMapping("/join")
     public ResponseEntity<MemberDTO> createMember(@RequestBody MemberDTO memberDTO) {
-        Member member = memberService.saveMember(memberDTO.toEntity());
-        return new ResponseEntity<>(MemberDTO.fromEntity(member), HttpStatus.CREATED);
+        Member member = memberDTO.toEntity();
+        Member savedMember = memberService.saveMember(member);
+        return new ResponseEntity<>(MemberDTO.fromEntity(savedMember), HttpStatus.CREATED);
     }
+
 }
