@@ -6,6 +6,7 @@ import com.travel.toy3.domain.trip.dto.TripDetailDTO;
 import com.travel.toy3.domain.trip.service.TripService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
