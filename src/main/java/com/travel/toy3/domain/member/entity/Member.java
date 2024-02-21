@@ -5,12 +5,16 @@ import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -34,4 +38,21 @@ public class Member {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "member_role",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public Member(String username, String password, String uname) {
+        this.username = username;
+        this.password = password;
+        this.uname = uname;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
 }
