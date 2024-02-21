@@ -1,11 +1,12 @@
 package com.travel.toy3.domain.member.controller;
 
 import com.travel.toy3.domain.member.dto.MemberDTO;
+import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,9 +14,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/members")
 public class MemberRestController {
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
 
+    public MemberRestController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    // 회원 전체 조회
     @GetMapping
     public List<MemberDTO> getAllMembers() {
         return memberService.getAllMembers()
@@ -23,4 +28,13 @@ public class MemberRestController {
                 .map(MemberDTO::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    // 회원가입
+    @PostMapping("/join")
+    public ResponseEntity<MemberDTO> createMember(@RequestBody MemberDTO memberDTO) {
+        Member member = memberDTO.toEntity();
+        Member savedMember = memberService.saveMember(member);
+        return new ResponseEntity<>(MemberDTO.fromEntity(savedMember), HttpStatus.CREATED);
+    }
+
 }
