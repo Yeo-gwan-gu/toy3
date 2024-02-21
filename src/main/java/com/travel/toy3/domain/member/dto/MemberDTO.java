@@ -25,4 +25,8 @@ public class MemberDTO {
                 .uname(member.getUname())
                 .build();
     }
+
+    public Member toEntity() {
+        return new Member(this.username, this.password, this.uname);
+    }
 }
