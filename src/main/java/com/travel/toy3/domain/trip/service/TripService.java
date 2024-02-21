@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,4 +104,24 @@ public class TripService {
         return Optional.ofNullable(tripList);
     }
 
+    @Transactional
+    public CreateUpdateTrip.Response updateTrip(
+            //Long memberId,
+            Long tripId,
+            CreateUpdateTrip.Request request
+    ) {
+        Trip existingTrip = getByTripId(tripId);
+
+        // 여행 정보가 존재하는지 확인
+        updateTripFromRequest(existingTrip, request);
+        return CreateUpdateTrip.Response.fromEntity(existingTrip);
+    }
+
+    private void updateTripFromRequest(Trip trip, CreateUpdateTrip.Request request) {
+        trip.setTripName(request.getTripName());
+        trip.setTripDepartureDate(request.getTripDepartureDate());
+        trip.setTripArrivalDate(request.getTripArrivalDate());
+        trip.setTripDestination(request.getTripDestination());
+        trip.setIsDomestic(request.getIsDomestic());
+    }
 }

@@ -52,4 +52,13 @@ public class TripController {
         return tripService.getUsernameTrip(username);
     }
 
+    @PutMapping("/{trip-id}")
+    public CreateUpdateTrip.Response updateTrip(
+//            @PathVariable Long memberId,
+            @PathVariable("trip-id") Long tripId,
+            @RequestBody final CreateUpdateTrip.Request request
+    ) {
+        log.info(" ===== 여행 수정 ===== ");
+        return tripService.updateTrip(tripId, request);
+    }
 }
