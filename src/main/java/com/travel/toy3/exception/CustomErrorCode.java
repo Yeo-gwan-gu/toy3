@@ -15,7 +15,8 @@ public enum CustomErrorCode {
     INVALID_ADDRESS(HttpStatus.NOT_FOUND.value(), "입력하신 주소의 정보가 존재하지 않습니다."),
     INVALID_TRIP(HttpStatus.NOT_FOUND.value(), "입력하신 여행 id에 해당하는 여행 정보가 존재하지 않습니다."),
     INVALID_ITINERARY(HttpStatus.NOT_FOUND.value(), "입력하신 여정 id에 해당하는 여정 정보가 존재하지 않습니다."),
-    INVALID_SEARCH_RESULT(HttpStatus.NOT_FOUND.value(), "입력하신 여행지에 해당하는 여행 정보가 존재하지 않습니다."),
+    INVALID_DESTINATION_SEARCH_RESULT(HttpStatus.NOT_FOUND.value(), "입력하신 여행지에 해당하는 여행 정보가 존재하지 않습니다."),
+    INVALID_USERNAME_SEARCH_RESULT(HttpStatus.NOT_FOUND.value(), "입력하신 사용자가 작성한 여행 정보가 존재하지 않습니다."),
 
     // 인증 실패
     INVALID_USERNAME(HttpStatus.UNAUTHORIZED.value(), "존재하지 않는 ID입니다."),
@@ -35,6 +36,7 @@ public enum CustomErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다."),
 
     // 단순히 안내가 필요한 경우
+    EMPTY_OWN_LIST(HttpStatus.OK.value(), "아직 작성하신 여행 정보가 없습니다."),
     EMPTY_LIKE_LIST(HttpStatus.OK.value(), "아직 좋아요를 누르신 여행 정보가 없습니다.");
 
     private final Integer code;
