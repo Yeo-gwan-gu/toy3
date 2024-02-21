@@ -13,8 +13,12 @@ import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+
+    public CustomUserDetailsService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optional = memberRepository.findByUsername(username);

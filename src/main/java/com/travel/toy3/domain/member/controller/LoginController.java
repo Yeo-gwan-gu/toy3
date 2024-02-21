@@ -1,6 +1,10 @@
 package com.travel.toy3.domain.member.controller;
 
 import com.travel.toy3.domain.member.dto.MemberDTO;
+import com.travel.toy3.exception.CustomErrorCode;
+import com.travel.toy3.exception.CustomException;
+import com.travel.toy3.exception.CustomExceptionHandler;
+import com.travel.toy3.util.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +28,41 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    public LoginController(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+//    @PostMapping("/signin")
+//    public ResponseEntity<String> login(@RequestBody MemberDTO memberDTO, HttpSession session) {
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(memberDTO.getUsername());
+//        // 비밀번호 확인
+//        if (!passwordEncoder.matches(memberDTO.getPassword(), userDetails.getPassword())) {
+//            return new ResponseEntity<>("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED);
+//        }
+//        // 인증 객체 생성
+//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//        // 인증 정보 저장
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+//        log.info("로그인 성공");
+//        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+//    }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> login(@RequestBody MemberDTO memberDTO, HttpSession session) {
+    public ApiResponse<Object> login(@RequestBody MemberDTO memberDTO, HttpSession session) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(memberDTO.getUsername());
         // 비밀번호 확인
         if (!passwordEncoder.matches(memberDTO.getPassword(), userDetails.getPassword())) {
-            return new ResponseEntity<>("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED);
+            return ApiResponse.builder()
+                    .data(CustomErrorCode.INVALID_PASSWORD)
+                    .resultCode(HttpStatus.UNAUTHORIZED.value())
+                    .errorMessage("잘못된 비밀번호입니다.")
+                    .build();
         }
         // 인증 객체 생성
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -43,7 +70,11 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
         log.info("로그인 성공");
-        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+        return ApiResponse.builder()
+                .data("username : "+memberDTO.getUsername())
+                .resultCode(HttpStatus.OK.value())
+                .resultMessage("로그인 성공")
+                .build();
     }
 
     @GetMapping("/check")

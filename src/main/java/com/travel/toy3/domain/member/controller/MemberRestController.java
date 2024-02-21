@@ -14,8 +14,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/members")
 public class MemberRestController {
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
+
+    public MemberRestController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     // 회원 전체 조회
     @GetMapping

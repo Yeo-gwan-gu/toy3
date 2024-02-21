@@ -11,14 +11,17 @@ import java.util.List;
 
 @Service
 public class MemberService {
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public MemberService(MemberRepository memberRepository, RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+        this.memberRepository = memberRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
