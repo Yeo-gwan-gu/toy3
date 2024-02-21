@@ -24,11 +24,11 @@ public class Moving {
 
     private String vehicle; // 이동 수단
     private String departurePlace; // 출발지
-    private String destinationPlace; //도착지
-    private Double departurePlaceLatitude; //출발지 위도
-    private Double departurePlaceLongitude; //출발지 경도
-    private Double destinationPlaceLatitude; //도착지 위도
-    private Double destinationPlaceLongitude; //도착지 경도
+    private String destinationPlace; // 도착지
+    private Double departurePlaceLatitude; // 출발지 위도
+    private Double departurePlaceLongitude; // 출발지 경도
+    private Double destinationPlaceLatitude; // 도착지 위도
+    private Double destinationPlaceLongitude; // 도착지 경도
     private LocalDateTime departureDatetime; // 출발 일시
     private LocalDateTime arrivalDatetime; // 도착 일시
 
