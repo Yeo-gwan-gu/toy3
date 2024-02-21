@@ -1,13 +1,15 @@
 package com.travel.toy3.domain.trip.controller;
 
-import com.travel.toy3.domain.trip.dto.TripDTO;
-import com.travel.toy3.domain.trip.entity.Trip;
+import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
 import com.travel.toy3.domain.trip.service.TripService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/api/trips")
 public class TripController {
@@ -15,10 +17,12 @@ public class TripController {
     @Autowired
     private TripService tripService;
 
-    @PostMapping //trip 저장
-    public ResponseEntity<TripDTO> createTrip(@RequestBody TripDTO trip) {
-        return tripService.createTrip(trip);
+    @PostMapping
+    public CreateUpdateTrip.Response addTrip(
+            @RequestBody final CreateUpdateTrip.Request request
+    ) {
+        log.info("request : {}", request);
+        return tripService.addTrip(request);
     }
-
 
 }

@@ -1,12 +1,13 @@
 package com.travel.toy3.domain.trip.dto;
 
-import com.travel.toy3.domain.member.entity.Member;
-import com.travel.toy3.domain.trip.entity.Like;
+import com.travel.toy3.domain.itinerary.entity.Itinerary;
+import com.travel.toy3.domain.trip.entity.Comment;
 import com.travel.toy3.domain.trip.entity.Trip;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Builder
-public class TripDTO {
+public class TripDetailDTO {
 
     private Long id;
     private String username;
@@ -23,14 +24,17 @@ public class TripDTO {
     private LocalDate tripArrivalDate;
     private String tripDestination;
     private Boolean isDomestic;
+    private List<Itinerary> itineraries;
+   // @Formula("(select count * from )")
     private Integer likeCount;
     private Integer commentCount;
+    private List<Comment> comments;
 
-    public static TripDTO fromEntity(
+    public static TripDetailDTO fromEntity(
             @NotNull Trip trip
-           //   @NotNull Trip trip, Member member, Like like, Comment comment
+           // @NotNull Trip trip, Member member, Itinerary itinerary, Like like, Comment comment
     ) {
-        return TripDTO.builder()
+        return TripDetailDTO.builder()
                 .id(trip.getId())
 //                .username(member.getUsername())
                 .tripName(trip.getTripName())
@@ -38,9 +42,10 @@ public class TripDTO {
                 .tripArrivalDate(trip.getTripArrivalDate())
                 .tripDestination(trip.getTripDestination())
                 .isDomestic(trip.getIsDomestic())
+//                .itineraries(itinerary.getItinerary())
 //                .likeCount(like.getLikeCount())
 //                .commentCount(comment.getCommentCount())
+//                .comments(comment.getComments())
                 .build();
     }
-
 }
