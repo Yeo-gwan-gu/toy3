@@ -8,8 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.travel.toy3.exception.CustomErrorCode.BAD_REQUEST;
-import static com.travel.toy3.exception.CustomErrorCode.INTERNAL_SERVER_ERROR;
+import static com.travel.toy3.exception.CustomErrorCode.*;
 
 @Slf4j
 @RestControllerAdvice
