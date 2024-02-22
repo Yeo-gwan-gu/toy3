@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException e
     ) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(INCORRECT_JSON_FORMAT.getCode())
                 .body(
                         ApiResponse.builder()
                                 .resultCode(INCORRECT_JSON_FORMAT.getCode())
