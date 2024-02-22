@@ -3,14 +3,12 @@ package com.travel.toy3.domain.member.service;
 import com.travel.toy3.domain.member.dto.CustomMember;
 import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.member.repository.MemberRepository;
-import com.travel.toy3.exception.CustomException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
-import static com.travel.toy3.exception.CustomErrorCode.INVALID_USERNAME;
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -24,9 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optional = memberRepository.findByUsername(username);
         if (!optional.isPresent()) {
-            throw  new CustomException(INVALID_USERNAME);
+            throw new UsernameNotFoundException("존재하지 않는 ID입니다.");
         }
-        Member member=optional.get();
+        Member member = optional.get();
         return new CustomMember(member);
     }
 }

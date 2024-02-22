@@ -1,10 +1,10 @@
 package com.travel.toy3.domain.member.controller;
 
 import com.travel.toy3.domain.member.dto.MemberDTO;
-import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.member.service.MemberService;
+import com.travel.toy3.domain.member.service.SecurityService;
+import com.travel.toy3.exception.CustomException;
 import com.travel.toy3.util.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
@@ -33,40 +31,27 @@ public class MemberRestController {
     private final MemberService memberService;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityService securityService;
 
     public MemberRestController(
             MemberService memberService, UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder, SecurityService securityService
     ) {
         this.memberService = memberService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
+        this.securityService = securityService;
     }
 
+    // 로그인
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse<Object>> login(
             @RequestBody MemberDTO memberDTO, HttpSession session
     ) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(memberDTO.getUsername());
-        // 아이디 오입력
-        if (userDetails.getUsername().isEmpty() || userDetails.getUsername().isBlank()) {
-            var response = ApiResponse.builder()
-                    .resultCode(INVALID_USERNAME.getCode())
-                    .errorMessage(INVALID_USERNAME.getMessage())
-                    .build();
-            return ResponseEntity
-                    .status(INVALID_USERNAME.getCode())
-                    .body(response);
-        }
-        // 비밀번호 확인
+        // 비밀번호 확인 (Service 로 어떻게 빼야할지 몰라서 일단 여기서 처리)
         if (!passwordEncoder.matches(memberDTO.getPassword(), userDetails.getPassword())) {
-            var response = ApiResponse.builder()
-                    .resultCode(INVALID_PASSWORD.getCode())
-                    .errorMessage(INVALID_PASSWORD.getMessage())
-                    .build();
-            return ResponseEntity
-                    .status(INVALID_PASSWORD.getCode())
-                    .body(response);
+            throw new CustomException(INVALID_PASSWORD);
         }
         // 인증 객체 생성
         UsernamePasswordAuthenticationToken authentication =
@@ -89,21 +74,11 @@ public class MemberRestController {
         return ResponseEntity.ok().body(response);
     }
 
+    // 로그인 상태 확인
     @GetMapping("/check")
     public ResponseEntity<ApiResponse<Object>> checkLogin(HttpSession session) {
-        // 세션에 저장된 인증 정보를 가져옴
-        SecurityContext securityContext = (SecurityContext) session
-                .getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-        if (securityContext == null || securityContext.getAuthentication() == null) {
-            var response = ApiResponse.builder()
-                    .resultCode(NO_ACCESS_PERMISSION.getCode())
-                    .errorMessage(NO_ACCESS_PERMISSION.getMessage())
-                    .build();
-            return ResponseEntity
-                    .status(NO_ACCESS_PERMISSION.getCode())
-                    .body(response);
-        }
-        Authentication authentication = securityContext.getAuthentication();
+        Authentication authentication = securityService.getAuthentication(session);
+
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
@@ -112,28 +87,11 @@ public class MemberRestController {
         return ResponseEntity.ok().body(response);
     }
 
+    // 로그아웃
     @PostMapping("/signout")
-    public ResponseEntity<ApiResponse<Object>> logout(
-            HttpServletRequest request, HttpSession session
-    ) {
-        // 세션에 저장된 인증 정보를 가져옴
-        SecurityContext securityContext = (SecurityContext) session
-                .getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-        // 로그아웃 상태로 로그아웃 시도 시 반환
-        if (securityContext == null || securityContext.getAuthentication() == null) {
-            var response = ApiResponse.builder()
-                    .resultCode(UNACCEPTABLE_LOGOUT_REQUEST.getCode())
-                    .errorMessage(UNACCEPTABLE_LOGOUT_REQUEST.getMessage())
-                    .build();
-            return ResponseEntity
-                    .status(UNACCEPTABLE_LOGOUT_REQUEST.getCode())
-                    .body(response);
-        }
-        log.info("로그아웃 성공");
-        // 세션 무효화
-        session.invalidate();
-        // 보안 컨텍스트 지우기
-        SecurityContextHolder.clearContext();
+    public ResponseEntity<ApiResponse<Object>> logout(HttpSession session) {
+        securityService.signOut(session);
+
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
@@ -143,7 +101,7 @@ public class MemberRestController {
     }
 
     // 회원 전체 조회
-    @GetMapping
+    @GetMapping("/admin")
     public List<MemberDTO> getAllMembers() {
         return memberService.getAllMembers()
                 .stream()
@@ -151,52 +109,14 @@ public class MemberRestController {
                 .collect(Collectors.toList());
     }
 
+    // 회원가입
     @PostMapping("/join")
     public ResponseEntity<ApiResponse<Object>> createMember(
             @Valid @RequestBody MemberDTO memberDTO,
             HttpSession session
     ) {
-        // 세션에서 인증 정보 가져오기
-        SecurityContext securityContext = (SecurityContext) session
-                .getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-        // 이미 로그인 상태에서 회원가입을 요청할 경우
-        if (securityContext != null && securityContext.getAuthentication() != null) {
-            var response = ApiResponse.builder()
-                    .resultCode(UNACCEPTABLE_JOIN_REQUEST.getCode())
-                    .errorMessage(UNACCEPTABLE_JOIN_REQUEST.getMessage())
-                    .build();
-            return ResponseEntity
-                    .status(UNACCEPTABLE_JOIN_REQUEST.getCode())
-                    .body(response);
-        }
-        // 이미 가입된 회원인지 확인
-        try {
-            UserDetails existingUser = userDetailsService.loadUserByUsername(memberDTO.getUsername());
-            // 아이디 오입력
-            if (existingUser.getUsername().isEmpty() || existingUser.getUsername().isBlank()) {
-                var response = ApiResponse.builder()
-                        .resultCode(INVALID_USERNAME.getCode())
-                        .errorMessage(INVALID_USERNAME.getMessage())
-                        .build();
-                return ResponseEntity
-                        .status(INVALID_USERNAME.getCode())
-                        .body(response);
-            }
-            if (existingUser != null) {
-                var response = ApiResponse.builder()
-                        .resultCode(HttpStatus.BAD_REQUEST.value())
-                        .errorMessage(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                        .data("이미 가입된 회원입니다.")
-                        .build();
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST.value())
-                        .body(response);
-            }
-        } catch (UsernameNotFoundException e) {
-            // 사용자를 찾지 못하는 경우 회원가입 진행
-            Member member = memberDTO.toEntity();
-            Member savedMember = memberService.saveMember(member);
-        }
+        securityService.createMember(memberDTO, session);
+
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
