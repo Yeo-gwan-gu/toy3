@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,23 +14,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Trip {
+@Table(name = "`like`")
+public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 여행 id
+    private Long id; // 좋아요 id
 
-    @ManyToOne(fetch = FetchType.EAGER) // 1:N 인 경우에 사용
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "memberId")
-    private Member member; // 사용자 id
+    private Member member; // 좋아요 누른 사용자
 
-    private String tripName; // 여행 이름
-    private LocalDate tripDepartureDate; // 여행 출발 날짜
-    private LocalDate tripArrivalDate; // 여행 도착 날짜
-    private String tripDestination; // 여행지
-    private Boolean isDomestic; // 국내외 여부
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tripId")
+    private Trip trip; // 여행 id
 
     @CreatedDate
     private LocalDateTime createdAt;
