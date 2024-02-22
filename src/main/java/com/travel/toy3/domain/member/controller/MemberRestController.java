@@ -2,7 +2,6 @@ package com.travel.toy3.domain.member.controller;
 
 import com.travel.toy3.domain.member.dto.MemberDTO;
 import com.travel.toy3.domain.member.service.MemberService;
-import com.travel.toy3.domain.member.service.SecurityService;
 import com.travel.toy3.exception.CustomException;
 import com.travel.toy3.util.ApiResponse;
 import jakarta.servlet.http.HttpSession;
@@ -31,16 +30,15 @@ public class MemberRestController {
     private final MemberService memberService;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final SecurityService securityService;
 
     public MemberRestController(
-            MemberService memberService, UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder, SecurityService securityService
+            MemberService memberService,
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
     ) {
         this.memberService = memberService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
-        this.securityService = securityService;
     }
 
     // 로그인
@@ -77,7 +75,7 @@ public class MemberRestController {
     // 로그인 상태 확인
     @GetMapping("/check")
     public ResponseEntity<ApiResponse<Object>> checkLogin(HttpSession session) {
-        Authentication authentication = securityService.getAuthentication(session);
+        Authentication authentication = memberService.getAuthentication(session);
 
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
@@ -90,7 +88,7 @@ public class MemberRestController {
     // 로그아웃
     @PostMapping("/signout")
     public ResponseEntity<ApiResponse<Object>> logout(HttpSession session) {
-        securityService.signOut(session);
+        memberService.signOut(session);
 
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
@@ -115,7 +113,7 @@ public class MemberRestController {
             @Valid @RequestBody MemberDTO memberDTO,
             HttpSession session
     ) {
-        securityService.createMember(memberDTO, session);
+        memberService.createMember(memberDTO, session);
 
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
