@@ -6,6 +6,7 @@ import com.travel.toy3.domain.member.service.MemberService;
 import com.travel.toy3.util.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,15 +19,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.travel.toy3.exception.CustomErrorCode.UNACCEPTABLE_JOIN_REQUEST;
+import static com.travel.toy3.exception.CustomErrorCode.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/members")
 public class MemberRestController {
     private final MemberService memberService;
     private final UserDetailsService userDetailsService;
 
-    public MemberRestController(MemberService memberService, UserDetailsService userDetailsService) {
+    public MemberRestController(
+            MemberService memberService, UserDetailsService userDetailsService
+    ) {
         this.memberService = memberService;
         this.userDetailsService = userDetailsService;
     }
@@ -41,7 +45,10 @@ public class MemberRestController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<Object>> createMember(@Valid @RequestBody MemberDTO memberDTO, HttpSession session) {
+    public ResponseEntity<ApiResponse<Object>> createMember(
+            @Valid @RequestBody MemberDTO memberDTO,
+            HttpSession session
+    ) {
         // 세션에서 인증 정보 가져오기
         SecurityContext securityContext = (SecurityContext) session
                 .getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
@@ -58,6 +65,16 @@ public class MemberRestController {
         // 이미 가입된 회원인지 확인
         try {
             UserDetails existingUser = userDetailsService.loadUserByUsername(memberDTO.getUsername());
+            // 아이디 오입력
+            if (existingUser.getUsername().isEmpty() || existingUser.getUsername().isBlank()) {
+                var response = ApiResponse.builder()
+                        .resultCode(INVALID_USERNAME.getCode())
+                        .errorMessage(INVALID_USERNAME.getMessage())
+                        .build();
+                return ResponseEntity
+                        .status(INVALID_USERNAME.getCode())
+                        .body(response);
+            }
             if (existingUser != null) {
                 var response = ApiResponse.builder()
                         .resultCode(HttpStatus.BAD_REQUEST.value())
@@ -78,9 +95,7 @@ public class MemberRestController {
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
                 .data("회원가입 성공")
                 .build();
-        return ResponseEntity
-                .ok()
-                .body(response);
+        return ResponseEntity.ok().body(response);
     }
 
 }

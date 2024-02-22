@@ -29,14 +29,28 @@ public class LoginController {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginController(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public LoginController(
+            UserDetailsService userDetailsService, PasswordEncoder passwordEncoder
+    ) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse<Object>> login(@RequestBody MemberDTO memberDTO, HttpSession session) {
+    public ResponseEntity<ApiResponse<Object>> login(
+            @RequestBody MemberDTO memberDTO, HttpSession session
+    ) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(memberDTO.getUsername());
+        // 아이디 오입력
+        if (userDetails.getUsername().isEmpty() || userDetails.getUsername().isBlank()) {
+            var response = ApiResponse.builder()
+                    .resultCode(INVALID_USERNAME.getCode())
+                    .errorMessage(INVALID_USERNAME.getMessage())
+                    .build();
+            return ResponseEntity
+                    .status(INVALID_USERNAME.getCode())
+                    .body(response);
+        }
         // 비밀번호 확인
         if (!passwordEncoder.matches(memberDTO.getPassword(), userDetails.getPassword())) {
             var response = ApiResponse.builder()
@@ -48,11 +62,16 @@ public class LoginController {
                     .body(response);
         }
         // 인증 객체 생성
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         // 인증 정보 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
+        SecurityContextHolder
+                .getContext()
+                .setAuthentication(authentication);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder
+                        .getContext());
         log.info("로그인 성공");
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())
@@ -87,7 +106,9 @@ public class LoginController {
     }
 
     @PostMapping("/signout")
-    public ResponseEntity<ApiResponse<Object>> logout(HttpServletRequest request, HttpSession session) {
+    public ResponseEntity<ApiResponse<Object>> logout(
+            HttpServletRequest request, HttpSession session
+    ) {
         // 세션에 저장된 인증 정보를 가져옴
         SecurityContext securityContext = (SecurityContext) session
                 .getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
@@ -111,8 +132,6 @@ public class LoginController {
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
                 .data("로그아웃 성공")
                 .build();
-        return ResponseEntity
-                .ok()
-                .body(response);
+        return ResponseEntity.ok().body(response);
     }
 }
