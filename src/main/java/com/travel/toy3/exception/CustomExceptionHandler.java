@@ -23,9 +23,11 @@ public class CustomExceptionHandler {
 
         return ResponseEntity
                 .status(e.getCustomErrorCode().getCode())
-                .body(ApiResponse.builder()
-                        .resultCode(e.getCustomErrorCode().getCode())
-                        .errorMessage(e.getDetailMessage())
-                        .build());
+                .body(
+                        ApiResponse.builder()
+                                .resultCode(e.getCustomErrorCode().getCode())
+                                .errorMessage(e.getDetailMessage())
+                                .build()
+                );
     }
 }
