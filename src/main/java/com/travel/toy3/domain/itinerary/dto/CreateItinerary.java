@@ -33,7 +33,7 @@ public class CreateItinerary {
 
         public static Response fromEntity(@NonNull Itinerary itinerary) {
             return Response.builder()
-//                    .tripId(itinerary.getTrip().getId())
+                    .tripId(itinerary.getTrip().getId())
                     .itineraryId(itinerary.getId())
                     .itineraryType(itinerary.getItineraryType())
                     .itineraryName(itinerary.getItineraryName())

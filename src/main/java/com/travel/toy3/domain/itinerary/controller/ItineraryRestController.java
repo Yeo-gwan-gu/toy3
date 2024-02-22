@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/itineraries")
@@ -18,18 +15,16 @@ public class ItineraryRestController {
     @Autowired
     private ItineraryService itineraryService;
 
-    @PostMapping("/register")
-//    @PostMapping("/{tripId}")
+    @PostMapping("/{tripId}")
     public ResponseEntity<ApiResponse<CreateItinerary.Response>> addItinerary(
-//            @PathVariable Long tripId,
+            @PathVariable Long tripId,
             @Valid @RequestBody final CreateItinerary.Request request
     ) {
 
         ApiResponse<CreateItinerary.Response> response = ApiResponse.<CreateItinerary.Response>builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
-                .data(itineraryService.addItinerary(request))
-//                .data(itineraryService.addItinerary(tripId, request))
+                .data(itineraryService.addItinerary(tripId, request))
                 .build();
 
         return ResponseEntity
