@@ -13,8 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,17 +26,9 @@ import static com.travel.toy3.exception.CustomErrorCode.*;
 @RequestMapping("/api/members")
 public class MemberRestController {
     private final MemberService memberService;
-    private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
 
-    public MemberRestController(
-            MemberService memberService,
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
-    ) {
+    public MemberRestController(MemberService memberService) {
         this.memberService = memberService;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     // 로그인
@@ -46,22 +36,24 @@ public class MemberRestController {
     public ResponseEntity<ApiResponse<Object>> login(
             @RequestBody MemberDTO memberDTO, HttpSession session
     ) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(memberDTO.getUsername());
-        // 비밀번호 확인 (Service 로 어떻게 빼야할지 몰라서 일단 여기서 처리)
-        if (!passwordEncoder.matches(memberDTO.getPassword(), userDetails.getPassword())) {
-            throw new CustomException(INVALID_PASSWORD);
+        SecurityContextHolder.clearContext(); // 강제 clear
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            throw new CustomException(UNACCEPTABLE_LOGIN_REQUEST);
         }
+
+        UserDetails userDetails = memberService.authenticate(memberDTO);
+
         // 인증 객체 생성
-        UsernamePasswordAuthenticationToken authentication =
+        UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
         // 인증 정보 저장
-        SecurityContextHolder
-                .getContext()
-                .setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder
-                        .getContext());
+                SecurityContextHolder.getContext());
+
         log.info("로그인 성공");
         var response = ApiResponse.builder()
                 .resultCode(HttpStatus.OK.value())

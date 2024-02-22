@@ -24,21 +24,10 @@ public class TripController {
 
     @PostMapping
     public CreateUpdateTrip.Response addTrip(
-          @RequestBody final CreateUpdateTrip.Request request
+            @RequestBody final CreateUpdateTrip.Request request
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof CustomMember customMember) {
-            Long memberId = customMember.getMember().getId();
-            // Member member = customMember.getMember();
-
-            log.info("request : {}", request);
-            return tripService.addTrip(memberId, request);
-        }else{
-            throw new RuntimeException("memberId가 없습니다");
-        }
-//        log.info("request : {}", request);
-//        return tripService.addTrip(memberId, request);
+        return tripService.addTrip(request);
     }
 
     @GetMapping
@@ -52,6 +41,7 @@ public class TripController {
         log.info("===== 여행 상세 조회 ======");
         return tripService.getTripDetail(tripId);
     }
+
     //500 에러 나고 있음
     @GetMapping("/destination/{trip-destination}")
     public List<CreateUpdateTrip.Response> getDestinationTrip(
