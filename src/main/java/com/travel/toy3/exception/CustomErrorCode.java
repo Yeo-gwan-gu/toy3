@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 public enum CustomErrorCode {
     // 잘못된 형식
     INCORRECT_USERNAME_FORMAT(HttpStatus.BAD_REQUEST.value(), "잘못된 ID 형식입니다. ID는 이메일 형식이어야 합니다."),
-    INCORRECT_JSON_FORMAT(HttpStatus.BAD_REQUEST.value(), "잘못된 요청 (JSON) 형식입니다."),
 
     // 유효성 검증 실패
     INVALID_ADDRESS(HttpStatus.NOT_FOUND.value(), "입력하신 주소의 정보가 존재하지 않습니다."),
@@ -37,6 +36,7 @@ public enum CustomErrorCode {
     // 우리가 정의한 예외가 아닌 경우
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버에 오류가 발생했습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다."),
+    INCORRECT_JSON_FORMAT(HttpStatus.BAD_REQUEST.value(), "잘못된 요청 (JSON) 형식입니다."),
 
     // 단순히 안내가 필요한 경우
     EMPTY_OWN_LIST(HttpStatus.OK.value(), "아직 작성하신 여행 정보가 없습니다."),
