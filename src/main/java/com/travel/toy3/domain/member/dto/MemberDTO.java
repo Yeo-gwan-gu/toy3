@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
-    @Email(message = "잘못된 이메일 형식입니다.")
+//    @Email(message = "잘못된 이메일 형식입니다.")
     private String username;
     private String password;
     private String uname;
