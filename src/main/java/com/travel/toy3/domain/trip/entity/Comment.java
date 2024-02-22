@@ -20,10 +20,13 @@ public class Comment {
     private Long id; // 댓글 id
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Member memberId; // 댓글을 작성한 사용자
+    @JoinColumn(name = "memberId")
+    private Member member; // 댓글을 작성한 사용자
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Trip tripId; // 여행 id
+    @JoinColumn(name = "tripId")
+    private Trip trip; // 여행 id
+
     private String content; // 댓글 내용
 
     @CreatedDate

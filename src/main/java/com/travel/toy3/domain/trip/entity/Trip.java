@@ -25,7 +25,7 @@ public class Trip {
 
     @ManyToOne(fetch = FetchType.EAGER) // 1:N 인 경우에 사용
     @JoinColumn(name = "memberId")
-    private Member memberId; // 사용자 id
+    private Member member; // 사용자 id
 
     private String tripName; // 여행 이름
     private LocalDate tripDepartureDate; // 여행 출발 날짜

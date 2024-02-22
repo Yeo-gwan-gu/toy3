@@ -32,7 +32,7 @@ public class TripDTO {
     ) {
         return TripDTO.builder()
                 .id(trip.getId())
-//                .username(member.getUsername())
+//                .member(member.getid())
                 .tripName(trip.getTripName())
                 .tripDepartureDate(trip.getTripDepartureDate())
                 .tripArrivalDate(trip.getTripArrivalDate())

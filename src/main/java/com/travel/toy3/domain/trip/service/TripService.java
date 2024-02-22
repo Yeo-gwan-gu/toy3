@@ -1,5 +1,7 @@
 package com.travel.toy3.domain.trip.service;
 
+import com.travel.toy3.domain.member.entity.Member;
+import com.travel.toy3.domain.member.repository.MemberRepository;
 import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
 import com.travel.toy3.domain.trip.dto.TripDTO;
 import com.travel.toy3.domain.trip.dto.TripDetailDTO;
@@ -11,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.travel.toy3.exception.CustomErrorCode.INVALID_TRIP;
+import static com.travel.toy3.exception.CustomErrorCode.NO_EDIT_PERMISSION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,21 +30,47 @@ public class TripService {
     @Autowired
     private TripRepository tripRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Transactional
-    public CreateUpdateTrip.Response addTrip(CreateUpdateTrip.Request request) {
-        return CreateUpdateTrip.Response.fromEntity(
-                tripRepository.save(createTripFromRequest(request))
-        );
-    }
-    private Trip createTripFromRequest(CreateUpdateTrip.Request request) {
-        return Trip.builder()
+    public CreateUpdateTrip.Response addTrip(
+            Long memberId,
+            CreateUpdateTrip.Request request
+    ) {
+        var optionalMember = memberRepository.findById(memberId);
+        Member member = optionalMember.orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        Trip trip = Trip.builder()
+                .member(member)
                 .tripName(request.getTripName())
                 .tripDepartureDate(request.getTripDepartureDate())
                 .tripArrivalDate(request.getTripArrivalDate())
                 .tripDestination(request.getTripDestination())
                 .isDomestic(request.getIsDomestic())
                 .build();
+        Trip addTrip = tripRepository.save(trip);
+
+        if (addTrip == null) {
+            throw new CustomException(NO_EDIT_PERMISSION);
+        }
+        return CreateUpdateTrip.Response.fromEntity(trip);
+//       request.setMemberId(memberId);
+//        return CreateUpdateTrip.Response.fromEntity(
+//                tripRepository.save(createTripFromRequest(request))
+//        );
     }
+
+//    private Trip createTripFromRequest(CreateUpdateTrip.Request request) {
+//        return Trip.builder()
+//                .tripName(request.getTripName())
+//                .tripDepartureDate(request.getTripDepartureDate())
+//                .tripArrivalDate(request.getTripArrivalDate())
+//                .tripDestination(request.getTripDestination())
+//                .isDomestic(request.getIsDomestic())
+//                .build();
+//    }
+
     // tripId를 찾는 함수
     private Trip getByTripId(Long tripId) {
         Optional<Trip> optional = tripRepository.findById(tripId);

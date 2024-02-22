@@ -1,12 +1,14 @@
 package com.travel.toy3.domain.trip.controller;
 
+import com.travel.toy3.domain.member.dto.CustomMember;
 import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
 import com.travel.toy3.domain.trip.dto.TripDTO;
 import com.travel.toy3.domain.trip.dto.TripDetailDTO;
 import com.travel.toy3.domain.trip.service.TripService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +24,23 @@ public class TripController {
 
     @PostMapping
     public CreateUpdateTrip.Response addTrip(
-            @RequestBody final CreateUpdateTrip.Request request
+          @RequestBody final CreateUpdateTrip.Request request
     ) {
-        log.info("request : {}", request);
-        return tripService.addTrip(request);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof CustomMember customMember) {
+            Long memberId = customMember.getMember().getId();
+            // Member member = customMember.getMember();
+
+            log.info("request : {}", request);
+            return tripService.addTrip(memberId, request);
+        }else{
+            throw new RuntimeException("memberId가 없습니다");
+        }
+//        log.info("request : {}", request);
+//        return tripService.addTrip(memberId, request);
     }
+
     @GetMapping
     public List<TripDTO> getAllTrips() {
         log.info("===== 여행 전체 조회 ======");

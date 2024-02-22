@@ -23,10 +23,12 @@ public class Like {
     private Long id; // 좋아요 id
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Member memberId; // 좋아요 누른 사용자
+    @JoinColumn(name = "memberId")
+    private Member member; // 좋아요 누른 사용자
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Trip tripId; // 여행 id
+    @JoinColumn(name = "tripId")
+    private Trip trip; // 여행 id
 
     @CreatedDate
     private LocalDateTime createdAt;
