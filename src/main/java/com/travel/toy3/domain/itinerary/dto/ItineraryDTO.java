@@ -20,7 +20,7 @@ public class ItineraryDTO {
 //    private AccommodationDTO accommodationDTO;
 //    private StayDTO stayDTO;
 
-    public static ItineraryDTO fromEntity(@NonNull Itinerary itinerary, @NonNull Moving moving) {
+    public static ItineraryDTO fromMovingEntity(@NonNull Itinerary itinerary, @NonNull Moving moving) {
 
         return ItineraryDTO.builder()
                 .tripId(itinerary.getTrip().getId())

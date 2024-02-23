@@ -136,7 +136,7 @@ public class ItineraryService {
 
         for (Itinerary itinerary : itineraries) {
             if (itinerary.getItineraryType() == ItineraryType.MOVING) {
-                itineraryDTOS.add(ItineraryDTO.fromEntity(itinerary, movingRepository.findByItinerary_Id(itinerary.getId())));
+                itineraryDTOS.add(ItineraryDTO.fromMovingEntity(itinerary, movingRepository.findByItinerary_Id(itinerary.getId())));
             }
         }
 
