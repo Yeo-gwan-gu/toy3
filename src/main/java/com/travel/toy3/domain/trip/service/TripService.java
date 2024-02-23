@@ -110,7 +110,8 @@ public class TripService {
         }
         Trip trip = optionalTrip.get();
         List<Comment> comments = commentRepository.findByTripId(tripId);
-        return TripDetailDTO.fromEntity(trip, comments);
+        Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
+        return TripDetailDTO.fromEntity(trip, comments, commentCount);
     }
 
     //목적지로 검색
