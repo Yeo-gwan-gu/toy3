@@ -1,11 +1,17 @@
 package com.travel.toy3.domain.itinerary.service;
 
+import com.travel.toy3.domain.itinerary.dto.CreateAccommodation;
 import com.travel.toy3.domain.itinerary.dto.CreateItinerary;
 import com.travel.toy3.domain.itinerary.dto.CreateMoving;
+import com.travel.toy3.domain.itinerary.dto.CreateStay;
+import com.travel.toy3.domain.itinerary.entity.Accommodation;
 import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.itinerary.entity.Moving;
+import com.travel.toy3.domain.itinerary.entity.Stay;
+import com.travel.toy3.domain.itinerary.repository.AccommodationRepository;
 import com.travel.toy3.domain.itinerary.repository.ItineraryRepository;
 import com.travel.toy3.domain.itinerary.repository.MovingRepository;
+import com.travel.toy3.domain.itinerary.repository.StayRepository;
 import com.travel.toy3.domain.trip.entity.Trip;
 import com.travel.toy3.domain.trip.repository.TripRepository;
 import com.travel.toy3.exception.CustomErrorCode;
@@ -21,6 +27,12 @@ public class ItineraryService {
 
     @Autowired
     private MovingRepository movingRepository;
+
+    @Autowired
+    private AccommodationRepository accommodationRepository;
+
+    @Autowired
+    private StayRepository stayRepository;
 
     @Autowired
     private TripRepository tripRepository;
@@ -63,6 +75,52 @@ public class ItineraryService {
 //                .destinationPlaceLongitude()
                 .departureDatetime(request.getDepartureDatetime())
                 .arrivalDatetime(request.getArrivalDatetime())
+                .build();
+    }
+
+    @Transactional
+    public CreateAccommodation.Response addAccommodation(Long tripId, CreateAccommodation.Request request) {
+        CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
+                .itineraryType(request.getItineraryType())
+                .itineraryName(request.getItineraryName())
+                .build();
+
+        Itinerary itinerary = addItineraryFromRequest(tripId, itineraryRequest);
+
+        return CreateAccommodation.Response.fromEntity(itineraryRepository.save(itinerary), accommodationRepository.save(addAccommodationFromRequest(itinerary, request)));
+    }
+
+    private Accommodation addAccommodationFromRequest(Itinerary itinerary, CreateAccommodation.Request request) {
+        return Accommodation.builder()
+                .itinerary(itinerary)
+                .accommodationPlaceName(request.getAccommodationPlaceName())
+//                .accommodationPlaceLatitude()
+//                .accommodationPlaceLongitude()
+                .checkIn(request.getCheckIn())
+                .checkOut(request.getCheckOut())
+                .build();
+    }
+
+    @Transactional
+    public CreateStay.Response addStay(Long tripId, CreateStay.Request request) {
+        CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
+                .itineraryType(request.getItineraryType())
+                .itineraryName(request.getItineraryName())
+                .build();
+
+        Itinerary itinerary = addItineraryFromRequest(tripId, itineraryRequest);
+
+        return CreateStay.Response.fromEntity(itineraryRepository.save(itinerary), stayRepository.save(addStayFromRequest(itinerary, request)));
+    }
+
+    private Stay addStayFromRequest(Itinerary itinerary, CreateStay.Request request) {
+        return Stay.builder()
+                .itinerary(itinerary)
+                .stayPlaceName(request.getStayPlaceName())
+//                .stayPlaceLatitude()
+//                .stayPlaceLongitude()
+                .arrivalDatetime(request.getArrivalDatetime())
+                .departureDatetime(request.getDepartureDatetime())
                 .build();
     }
 }
