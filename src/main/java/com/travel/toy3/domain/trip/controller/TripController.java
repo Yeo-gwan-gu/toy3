@@ -47,7 +47,7 @@ public class TripController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{trip-id}")
+    @GetMapping("/{trip-id}")
     public ResponseEntity<ApiResponse<TripDetailDTO>> getTripDetail(
             @PathVariable("trip-id") Long tripId
     ) {
