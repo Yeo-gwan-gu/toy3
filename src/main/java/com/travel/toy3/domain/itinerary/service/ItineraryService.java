@@ -1,17 +1,13 @@
 package com.travel.toy3.domain.itinerary.service;
 
-import com.travel.toy3.domain.itinerary.dto.CreateItinerary;
-import com.travel.toy3.domain.itinerary.dto.CreateMoving;
-import com.travel.toy3.domain.itinerary.dto.CreateAccommodation;
-import com.travel.toy3.domain.itinerary.dto.CreateStay;
-import com.travel.toy3.domain.itinerary.dto.ItineraryDTO;
+import com.travel.toy3.domain.itinerary.dto.*;
+import com.travel.toy3.domain.itinerary.entity.Accommodation;
 import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.itinerary.entity.Moving;
-import com.travel.toy3.domain.itinerary.entity.Accommodation;
 import com.travel.toy3.domain.itinerary.entity.Stay;
+import com.travel.toy3.domain.itinerary.repository.AccommodationRepository;
 import com.travel.toy3.domain.itinerary.repository.ItineraryRepository;
 import com.travel.toy3.domain.itinerary.repository.MovingRepository;
-import com.travel.toy3.domain.itinerary.repository.AccommodationRepository;
 import com.travel.toy3.domain.itinerary.repository.StayRepository;
 import com.travel.toy3.domain.itinerary.type.ItineraryType;
 import com.travel.toy3.domain.trip.entity.Trip;
@@ -136,10 +132,31 @@ public class ItineraryService {
 
         for (Itinerary itinerary : itineraries) {
             if (itinerary.getItineraryType() == ItineraryType.MOVING) {
-                itineraryDTOS.add(ItineraryDTO.fromEntity(itinerary, movingRepository.findByItinerary_Id(itinerary.getId())));
+                itineraryDTOS.add(ItineraryDTO.fromMovingEntity(itinerary, movingRepository.findByItinerary_Id(itinerary.getId())));
+            } else if (itinerary.getItineraryType() == ItineraryType.ACCOMMODATION) {
+                itineraryDTOS.add(ItineraryDTO.fromAccommodationEntity(itinerary, accommodationRepository.findByItinerary_Id(itinerary.getId())));
+            } else {
+                itineraryDTOS.add(ItineraryDTO.fromStayEntity(itinerary, stayRepository.findByItinerary_Id(itinerary.getId())));
             }
         }
 
         return itineraryDTOS;
+    }
+
+    @Transactional(readOnly = true)
+    public ItineraryDTO getItineraryById(Long itineraryId) {
+        var optionalItinerary = itineraryRepository.findById(itineraryId);
+        Itinerary itinerary = optionalItinerary
+                .orElseThrow(
+                        () -> new CustomException(CustomErrorCode.INVALID_ITINERARY)
+                );
+
+        if (itinerary.getItineraryType() == ItineraryType.MOVING) {
+            return ItineraryDTO.fromMovingEntity(itinerary, movingRepository.findByItinerary_Id(itineraryId));
+        } else if (itinerary.getItineraryType() == ItineraryType.ACCOMMODATION) {
+            return ItineraryDTO.fromAccommodationEntity(itinerary, accommodationRepository.findByItinerary_Id(itineraryId));
+        } else {
+            return ItineraryDTO.fromStayEntity(itinerary, stayRepository.findByItinerary_Id(itineraryId));
+        }
     }
 }

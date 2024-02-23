@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AccommodationRepository extends JpaRepository<Accommodation, Long> {
+    Accommodation findByItinerary_Id(Long itineraryId);
 }
