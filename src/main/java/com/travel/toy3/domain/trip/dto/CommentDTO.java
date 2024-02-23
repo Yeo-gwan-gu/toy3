@@ -24,6 +24,16 @@ public class CommentDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class UpdateRequest {
+        @NotNull
+        private String content;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class Response {
         private Long id;
         private String content;

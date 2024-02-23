@@ -11,8 +11,7 @@ import com.travel.toy3.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.travel.toy3.exception.CustomErrorCode.INVALID_TRIP;
-import static com.travel.toy3.exception.CustomErrorCode.INVALID_USERNAME;
+import static com.travel.toy3.exception.CustomErrorCode.*;
 
 @Service
 public class CommentService {
@@ -42,5 +41,16 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return CommentDTO.Response.fromEntity(savedComment);
+    }
+
+    public CommentDTO.Response updateComment(Long commentId, CommentDTO.UpdateRequest requestDto) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(INVALID_COMMENT_SEARCH_RESULT));
+
+        comment.setContent(requestDto.getContent());
+
+        Comment updatedComment = commentRepository.save(comment);
+
+        return CommentDTO.Response.fromEntity(updatedComment);
     }
 }

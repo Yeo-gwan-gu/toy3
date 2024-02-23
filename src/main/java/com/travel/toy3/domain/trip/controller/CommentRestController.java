@@ -53,4 +53,17 @@ public class CommentRestController {
         CustomMember customMember = (CustomMember) authentication.getPrincipal();
         return customMember.getMember();
     }
+    @PutMapping("/{comment-id}")
+    public ResponseEntity<ApiResponse<CommentDTO.Response>> updateComment(
+            @PathVariable("comment-id") Long commentId,
+            @RequestBody CommentDTO.UpdateRequest requestDto
+    ) {
+        CommentDTO.Response responseDto = commentService.updateComment(commentId, requestDto);
+        ApiResponse<CommentDTO.Response> response = ApiResponse.<CommentDTO.Response>builder()
+                .resultMessage("댓글 수정 성공")
+                .resultCode(HttpStatus.OK.value())
+                .data(responseDto)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }
