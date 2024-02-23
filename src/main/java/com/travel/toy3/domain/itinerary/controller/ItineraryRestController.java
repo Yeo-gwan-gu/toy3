@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class ItineraryRestController {
     public ResponseEntity<ApiResponse<CreateMoving.Response>> addMoving(
             @PathVariable Long tripId,
             @Valid @RequestBody final CreateMoving.Request request
-    ) {
+    ) throws IOException {
         ApiResponse<CreateMoving.Response> response = ApiResponse.<CreateMoving.Response>builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
@@ -42,7 +43,7 @@ public class ItineraryRestController {
     public ResponseEntity<ApiResponse<CreateAccommodation.Response>> addAccommodation(
             @PathVariable Long tripId,
             @Valid @RequestBody final CreateAccommodation.Request request
-    ) {
+    ) throws IOException {
         ApiResponse<CreateAccommodation.Response> response = ApiResponse.<CreateAccommodation.Response>builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
@@ -59,7 +60,7 @@ public class ItineraryRestController {
     public ResponseEntity<ApiResponse<CreateStay.Response>> addStay(
             @PathVariable Long tripId,
             @Valid @RequestBody final CreateStay.Request request
-    ) {
+    ) throws IOException {
         ApiResponse<CreateStay.Response> response = ApiResponse.<CreateStay.Response>builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
