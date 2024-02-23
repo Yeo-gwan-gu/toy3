@@ -33,9 +33,9 @@ public class TripDetailDTO {
 
     public static TripDetailDTO fromEntity(
             @NotNull Trip trip,
-            @NotNull List<Comment> comments,
-            @NotNull Integer commentCount
-           // @NotNull Trip trip, Member member, Itinerary itinerary, Like like, Comment comment
+            @NotNull Integer likeCount,
+            @NotNull List<Comment> comments
+            // @NotNull Trip trip, Member member, Itinerary itinerary, Like like, Comment comment
     ) {
         List<CommentDTO.Response> commentList = comments.stream()
                 .map(CommentDTO.Response::fromEntity)
@@ -50,8 +50,8 @@ public class TripDetailDTO {
                 .tripDestination(trip.getTripDestination())
                 .isDomestic(trip.getIsDomestic())
 //                .itineraries(itinerary.getItinerary())
-//                .likeCount(like.getLikeCount())
-                .commentCount(commentCount)
+                .likeCount(likeCount)
+//                .commentCount(comment.getCommentCount())
                 .comments(commentList)
                 .build();
     }

@@ -28,18 +28,17 @@ public class TripDTO {
 
     public static TripDTO fromEntity(
             @NotNull Trip trip,
+            @NotNull Integer likeCount,
             @NotNull Integer commentCount
-           //   @NotNull Trip trip, Member member, Like like, Comment comment
     ) {
         return TripDTO.builder()
                 .id(trip.getId())
-//                .member(member.getid())
                 .tripName(trip.getTripName())
                 .tripDepartureDate(trip.getTripDepartureDate())
                 .tripArrivalDate(trip.getTripArrivalDate())
                 .tripDestination(trip.getTripDestination())
                 .isDomestic(trip.getIsDomestic())
-//                .likeCount(like.getLikeCount())
+                .likeCount(likeCount)
                 .commentCount(commentCount)
                 .build();
     }
