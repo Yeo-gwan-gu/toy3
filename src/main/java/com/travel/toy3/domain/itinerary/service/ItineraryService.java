@@ -14,10 +14,12 @@ import com.travel.toy3.domain.trip.entity.Trip;
 import com.travel.toy3.domain.trip.repository.TripRepository;
 import com.travel.toy3.exception.CustomErrorCode;
 import com.travel.toy3.exception.CustomException;
+import com.travel.toy3.util.Geocoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +55,7 @@ public class ItineraryService {
     }
 
     @Transactional
-    public CreateMoving.Response addMoving(Long tripId, CreateMoving.Request request) {
+    public CreateMoving.Response addMoving(Long tripId, CreateMoving.Request request) throws IOException {
         CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
                 .itineraryType(request.getItineraryType())
                 .itineraryName(request.getItineraryName())
@@ -64,23 +66,23 @@ public class ItineraryService {
         return CreateMoving.Response.fromEntity(itineraryRepository.save(itinerary), movingRepository.save(addMovingFromRequest(itinerary, request)));
     }
 
-    private Moving addMovingFromRequest(Itinerary itinerary, CreateMoving.Request request) {
+    private Moving addMovingFromRequest(Itinerary itinerary, CreateMoving.Request request) throws IOException {
         return Moving.builder()
                 .itinerary(itinerary)
                 .vehicle(request.getVehicle())
                 .departurePlace(request.getDeparturePlace())
                 .destinationPlace(request.getDestinationPlace())
-//                .departurePlaceLatitude()
-//                .departurePlaceLongitude()
-//                .destinationPlaceLatitude()
-//                .destinationPlaceLongitude()
+                .departurePlaceLatitude(Geocoding.getGeoInfo(request.getDeparturePlaceAddress()).getLatitude())
+                .departurePlaceLongitude(Geocoding.getGeoInfo(request.getDeparturePlaceAddress()).getLongitude())
+                .destinationPlaceLatitude(Geocoding.getGeoInfo(request.getDestinationPlaceAddress()).getLatitude())
+                .destinationPlaceLongitude(Geocoding.getGeoInfo(request.getDestinationPlaceAddress()).getLongitude())
                 .departureDatetime(request.getDepartureDatetime())
                 .arrivalDatetime(request.getArrivalDatetime())
                 .build();
     }
 
     @Transactional
-    public CreateAccommodation.Response addAccommodation(Long tripId, CreateAccommodation.Request request) {
+    public CreateAccommodation.Response addAccommodation(Long tripId, CreateAccommodation.Request request) throws IOException {
         CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
                 .itineraryType(request.getItineraryType())
                 .itineraryName(request.getItineraryName())
@@ -91,19 +93,19 @@ public class ItineraryService {
         return CreateAccommodation.Response.fromEntity(itineraryRepository.save(itinerary), accommodationRepository.save(addAccommodationFromRequest(itinerary, request)));
     }
 
-    private Accommodation addAccommodationFromRequest(Itinerary itinerary, CreateAccommodation.Request request) {
+    private Accommodation addAccommodationFromRequest(Itinerary itinerary, CreateAccommodation.Request request) throws IOException {
         return Accommodation.builder()
                 .itinerary(itinerary)
                 .accommodationPlaceName(request.getAccommodationPlaceName())
-//                .accommodationPlaceLatitude()
-//                .accommodationPlaceLongitude()
+                .accommodationPlaceLatitude(Geocoding.getGeoInfo(request.getAccommodationPlaceAddress()).getLatitude())
+                .accommodationPlaceLongitude(Geocoding.getGeoInfo(request.getAccommodationPlaceAddress()).getLongitude())
                 .checkIn(request.getCheckIn())
                 .checkOut(request.getCheckOut())
                 .build();
     }
 
     @Transactional
-    public CreateStay.Response addStay(Long tripId, CreateStay.Request request) {
+    public CreateStay.Response addStay(Long tripId, CreateStay.Request request) throws IOException {
         CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
                 .itineraryType(request.getItineraryType())
                 .itineraryName(request.getItineraryName())
@@ -114,19 +116,19 @@ public class ItineraryService {
         return CreateStay.Response.fromEntity(itineraryRepository.save(itinerary), stayRepository.save(addStayFromRequest(itinerary, request)));
     }
 
-    private Stay addStayFromRequest(Itinerary itinerary, CreateStay.Request request) {
+    private Stay addStayFromRequest(Itinerary itinerary, CreateStay.Request request) throws IOException {
         return Stay.builder()
                 .itinerary(itinerary)
                 .stayPlaceName(request.getStayPlaceName())
-//                .stayPlaceLatitude()
-//                .stayPlaceLongitude()
+                .stayPlaceLatitude(Geocoding.getGeoInfo(request.getStayPlaceAddress()).getLatitude())
+                .stayPlaceLongitude(Geocoding.getGeoInfo(request.getStayPlaceAddress()).getLongitude())
                 .arrivalDatetime(request.getArrivalDatetime())
                 .departureDatetime(request.getDepartureDatetime())
                 .build();
     }
 
     @Transactional(readOnly = true)
-    public List<ItineraryDTO> getAllItineraries(Long tripId) {
+    public List<ItineraryDTO> getAllItineraries(Long tripId) throws IOException {
         List<Itinerary> itineraries = itineraryRepository.findByTrip_Id(tripId);
         List<ItineraryDTO> itineraryDTOS = new ArrayList<>();
 
@@ -144,7 +146,7 @@ public class ItineraryService {
     }
 
     @Transactional(readOnly = true)
-    public ItineraryDTO getItineraryById(Long itineraryId) {
+    public ItineraryDTO getItineraryById(Long itineraryId) throws IOException {
         var optionalItinerary = itineraryRepository.findById(itineraryId);
         Itinerary itinerary = optionalItinerary
                 .orElseThrow(

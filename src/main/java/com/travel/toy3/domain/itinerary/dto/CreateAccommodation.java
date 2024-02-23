@@ -3,9 +3,11 @@ package com.travel.toy3.domain.itinerary.dto;
 import com.travel.toy3.domain.itinerary.entity.Accommodation;
 import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.itinerary.type.ItineraryType;
+import com.travel.toy3.util.Geocoding;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class CreateAccommodation {
@@ -45,14 +47,14 @@ public class CreateAccommodation {
         private LocalDateTime checkIn;
         private LocalDateTime checkOut;
 
-        public static Response fromEntity(@NonNull Itinerary itinerary, @NonNull Accommodation accommodation) {
+        public static Response fromEntity(@NonNull Itinerary itinerary, @NonNull Accommodation accommodation) throws IOException {
             return Response.builder()
                     .tripId(itinerary.getTrip().getId())
                     .itineraryId(itinerary.getId())
                     .itineraryType(itinerary.getItineraryType())
                     .itineraryName(itinerary.getItineraryName())
                     .accommodationPlaceName(accommodation.getAccommodationPlaceName())
-//                    .accommodationPlaceAddress()
+                    .accommodationPlaceAddress(Geocoding.getAddress(accommodation.getAccommodationPlaceLatitude(), accommodation.getAccommodationPlaceLongitude()))
                     .checkIn(accommodation.getCheckIn())
                     .checkOut(accommodation.getCheckOut())
                     .build();
