@@ -9,6 +9,7 @@ import com.travel.toy3.domain.trip.dto.TripDetailDTO;
 import com.travel.toy3.domain.trip.entity.Comment;
 import com.travel.toy3.domain.trip.entity.Trip;
 import com.travel.toy3.domain.trip.repository.CommentRepository;
+import com.travel.toy3.domain.trip.repository.LikeRepository;
 import com.travel.toy3.domain.trip.repository.TripRepository;
 import com.travel.toy3.exception.CustomException;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +39,7 @@ public class TripService {
     private TripRepository tripRepository;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -64,24 +65,11 @@ public class TripService {
             throw new CustomException(NO_EDIT_PERMISSION);
         }
         return CreateUpdateTrip.Response.fromEntity(trip);
-//       request.setMemberId(memberId);
-//        return CreateUpdateTrip.Response.fromEntity(
-//                tripRepository.save(createTripFromRequest(request))
-//        );
     }
 
-//    private Trip createTripFromRequest(CreateUpdateTrip.Request request) {
-//        return Trip.builder()
-//                .tripName(request.getTripName())
-//                .tripDepartureDate(request.getTripDepartureDate())
-//                .tripArrivalDate(request.getTripArrivalDate())
-//                .tripDestination(request.getTripDestination())
-//                .isDomestic(request.getIsDomestic())
-//                .build();
-//    }
 
     // tripId를 찾는 함수
-    private Trip getByTripId(Long tripId) {
+    public Trip getByTripId(Long tripId) {
         Optional<Trip> optional = tripRepository.findById(tripId);
 
         if (optional.isPresent()) {
@@ -95,8 +83,9 @@ public class TripService {
     public List<TripDTO> getAllTrips() {
         List<Trip> trips = tripRepository.findAll();
         return trips.stream().map(trip -> {
+            Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
             Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
-            return TripDTO.fromEntity(trip, commentCount);
+            return TripDTO.fromEntity(trip,likeCount, commentCount);
         }).collect(Collectors.toList());
     }
 
@@ -111,7 +100,9 @@ public class TripService {
         Trip trip = optionalTrip.get();
         List<Comment> comments = commentRepository.findByTripId(tripId);
         Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
-        return TripDetailDTO.fromEntity(trip, comments, commentCount);
+        Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
+
+        return TripDetailDTO.fromEntity(trip,likeCount, comments, commentCount);
     }
 
     //목적지로 검색
@@ -121,7 +112,12 @@ public class TripService {
         List<CreateUpdateTrip.Response> tripList = new ArrayList<>();
 
         for (Trip trip : trips) {
-            tripList.add(CreateUpdateTrip.Response.fromEntity(trip));
+
+            CreateUpdateTrip.Response tripResponse = CreateUpdateTrip.Response.fromEntity(trip);
+            Long likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y");
+
+            tripResponse.setLikeCount(likeCount);
+            tripList.add(tripResponse);
         }
         return tripList;
     }
