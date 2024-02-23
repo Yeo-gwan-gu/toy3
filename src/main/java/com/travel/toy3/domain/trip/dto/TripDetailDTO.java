@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,12 +29,17 @@ public class TripDetailDTO {
    // @Formula("(select count * from )")
     private Integer likeCount;
     private Integer commentCount;
-    private List<Comment> comments;
+    private List<CommentDTO.Response> comments;
 
     public static TripDetailDTO fromEntity(
-            @NotNull Trip trip
+            @NotNull Trip trip,
+            @NotNull List<Comment> comments
            // @NotNull Trip trip, Member member, Itinerary itinerary, Like like, Comment comment
     ) {
+        List<CommentDTO.Response> commentList = comments.stream()
+                .map(CommentDTO.Response::fromEntity)
+                .collect(Collectors.toList());
+
         return TripDetailDTO.builder()
                 .id(trip.getId())
 //                .username(member.getUsername())
@@ -45,7 +51,7 @@ public class TripDetailDTO {
 //                .itineraries(itinerary.getItinerary())
 //                .likeCount(like.getLikeCount())
 //                .commentCount(comment.getCommentCount())
-//                .comments(comment.getComments())
+                .comments(commentList)
                 .build();
     }
 }
