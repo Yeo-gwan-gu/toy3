@@ -76,7 +76,7 @@ public class ItineraryRestController {
     @GetMapping("/trip/{tripId}")
     public ResponseEntity<ApiResponse<List<ItineraryDTO>>> getAllItineraries(
             @PathVariable Long tripId
-    ) {
+    ) throws IOException {
         ApiResponse<List<ItineraryDTO>> response = ApiResponse.<List<ItineraryDTO>>builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
@@ -92,7 +92,7 @@ public class ItineraryRestController {
     @GetMapping("/itinerary/{itineraryId}")
     public ResponseEntity<ApiResponse<ItineraryDTO>> getItineraryById(
             @PathVariable Long itineraryId
-    ) {
+    ) throws IOException {
         ApiResponse<ItineraryDTO> response = ApiResponse.<ItineraryDTO>builder()
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())

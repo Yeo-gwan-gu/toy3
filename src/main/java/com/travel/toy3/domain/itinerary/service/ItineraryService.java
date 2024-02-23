@@ -128,7 +128,7 @@ public class ItineraryService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItineraryDTO> getAllItineraries(Long tripId) {
+    public List<ItineraryDTO> getAllItineraries(Long tripId) throws IOException {
         List<Itinerary> itineraries = itineraryRepository.findByTrip_Id(tripId);
         List<ItineraryDTO> itineraryDTOS = new ArrayList<>();
 
@@ -146,7 +146,7 @@ public class ItineraryService {
     }
 
     @Transactional(readOnly = true)
-    public ItineraryDTO getItineraryById(Long itineraryId) {
+    public ItineraryDTO getItineraryById(Long itineraryId) throws IOException {
         var optionalItinerary = itineraryRepository.findById(itineraryId);
         Itinerary itinerary = optionalItinerary
                 .orElseThrow(
