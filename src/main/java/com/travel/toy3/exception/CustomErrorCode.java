@@ -16,6 +16,7 @@ public enum CustomErrorCode {
     INVALID_ITINERARY(HttpStatus.NOT_FOUND.value(), "입력하신 여정 id에 해당하는 여정 정보가 존재하지 않습니다."),
     INVALID_DESTINATION_SEARCH_RESULT(HttpStatus.NOT_FOUND.value(), "입력하신 여행지에 해당하는 여행 정보가 존재하지 않습니다."),
     INVALID_USERNAME_SEARCH_RESULT(HttpStatus.NOT_FOUND.value(), "입력하신 사용자가 작성한 여행 정보가 존재하지 않습니다."),
+    INVALID_COMMENT_SEARCH_RESULT(HttpStatus.NOT_FOUND.value(), "입력하신 댓글 id에 해당하는 댓글이 존재하지 않습니다."),
 
     // 회원가입 실패
     DUPLICATED_USERNAME(HttpStatus.CONFLICT.value(), "이미 존재하는 ID입니다. 다른 ID를 입력하세요."),

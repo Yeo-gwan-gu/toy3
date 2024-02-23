@@ -40,6 +40,7 @@ public class CreateUpdateTrip {
         private LocalDate tripArrivalDate;
         private String tripDestination;
         private Boolean isDomestic;
+        private Long likeCount;
 
         public static Response fromEntity(
                 @NotNull Trip trip
@@ -51,6 +52,20 @@ public class CreateUpdateTrip {
                     .tripArrivalDate(trip.getTripArrivalDate())
                     .tripDestination(trip.getTripDestination())
                     .isDomestic(trip.getIsDomestic())
+                    .build();
+        }
+        public static Response fromLikeEntity(
+                @NotNull Trip trip,
+                @NotNull Long likeCount
+        ) {
+            return Response.builder()
+                    .id(trip.getId())
+                    .tripName(trip.getTripName())
+                    .tripDepartureDate(trip.getTripDepartureDate())
+                    .tripArrivalDate(trip.getTripArrivalDate())
+                    .tripDestination(trip.getTripDestination())
+                    .isDomestic(trip.getIsDomestic())
+                    .likeCount(likeCount)
                     .build();
         }
     }

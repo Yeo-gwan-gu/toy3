@@ -27,19 +27,19 @@ public class TripDTO {
     private Integer commentCount;
 
     public static TripDTO fromEntity(
-            @NotNull Trip trip
-           //   @NotNull Trip trip, Member member, Like like, Comment comment
+            @NotNull Trip trip,
+            @NotNull Integer likeCount,
+            @NotNull Integer commentCount
     ) {
         return TripDTO.builder()
                 .id(trip.getId())
-//                .member(member.getid())
                 .tripName(trip.getTripName())
                 .tripDepartureDate(trip.getTripDepartureDate())
                 .tripArrivalDate(trip.getTripArrivalDate())
                 .tripDestination(trip.getTripDestination())
                 .isDomestic(trip.getIsDomestic())
-//                .likeCount(like.getLikeCount())
-//                .commentCount(comment.getCommentCount())
+                .likeCount(likeCount)
+                .commentCount(commentCount)
                 .build();
     }
 

@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "`like`")
 public class Like {
@@ -29,6 +30,8 @@ public class Like {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tripId")
     private Trip trip; // 여행 id
+
+    private String status;
 
     @CreatedDate
     private LocalDateTime createdAt;
