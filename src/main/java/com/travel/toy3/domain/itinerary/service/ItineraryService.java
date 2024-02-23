@@ -1,17 +1,19 @@
 package com.travel.toy3.domain.itinerary.service;
 
-import com.travel.toy3.domain.itinerary.dto.CreateAccommodation;
 import com.travel.toy3.domain.itinerary.dto.CreateItinerary;
 import com.travel.toy3.domain.itinerary.dto.CreateMoving;
+import com.travel.toy3.domain.itinerary.dto.CreateAccommodation;
 import com.travel.toy3.domain.itinerary.dto.CreateStay;
-import com.travel.toy3.domain.itinerary.entity.Accommodation;
+import com.travel.toy3.domain.itinerary.dto.ItineraryDTO;
 import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.itinerary.entity.Moving;
+import com.travel.toy3.domain.itinerary.entity.Accommodation;
 import com.travel.toy3.domain.itinerary.entity.Stay;
-import com.travel.toy3.domain.itinerary.repository.AccommodationRepository;
 import com.travel.toy3.domain.itinerary.repository.ItineraryRepository;
 import com.travel.toy3.domain.itinerary.repository.MovingRepository;
+import com.travel.toy3.domain.itinerary.repository.AccommodationRepository;
 import com.travel.toy3.domain.itinerary.repository.StayRepository;
+import com.travel.toy3.domain.itinerary.type.ItineraryType;
 import com.travel.toy3.domain.trip.entity.Trip;
 import com.travel.toy3.domain.trip.repository.TripRepository;
 import com.travel.toy3.exception.CustomErrorCode;
@@ -19,6 +21,9 @@ import com.travel.toy3.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ItineraryService {
@@ -122,5 +127,19 @@ public class ItineraryService {
                 .arrivalDatetime(request.getArrivalDatetime())
                 .departureDatetime(request.getDepartureDatetime())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItineraryDTO> getAllItineraries(Long tripId) {
+        List<Itinerary> itineraries = itineraryRepository.findByTrip_Id(tripId);
+        List<ItineraryDTO> itineraryDTOS = new ArrayList<>();
+
+        for (Itinerary itinerary : itineraries) {
+            if (itinerary.getItineraryType() == ItineraryType.MOVING) {
+                itineraryDTOS.add(ItineraryDTO.fromEntity(itinerary, movingRepository.findByItinerary_Id(itinerary.getId())));
+            }
+        }
+
+        return itineraryDTOS;
     }
 }
