@@ -1,7 +1,6 @@
 package com.travel.toy3.domain.trip.dto;
 
-import com.travel.toy3.domain.member.entity.Member;
-import com.travel.toy3.domain.trip.entity.Trip;
+import com.travel.toy3.domain.trip.entity.Comment;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -11,14 +10,13 @@ public class CommentDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class commentRequest{
+    public static class Request {
         @NotNull
-        private Long commentId;
-        @NonNull
-        private Member memberId;
-        @NotNull
-        private Trip tripId;
         private String content;
+        @NotNull
+        private Long tripId;
+        @NotNull
+        private Long memberId;
     }
 
     @Getter
@@ -26,20 +24,19 @@ public class CommentDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class commentResponse{
-        private Long commentId;
-        private Member memberId;
-        private Trip tripId;
+    public static class Response {
+        private Long id;
         private String content;
+        private Long tripId;
+        private Long memberId;
 
-//        public static commentResponse(
-//                @NotNull Member member, @NotNull Trip trip, Comment comment){
-//            return commentResponse.builder()
-//                    .commentId(comment.getCommentId())
-//                    .memberId(member.getmemberId())
-//                    .tripId(trip.getTripId())
-//                    .content(comment.getContent())
-//                    .builder();
-//        }
+        public static Response fromEntity(@NonNull Comment comment) {
+            return Response.builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .tripId(comment.getTrip().getId())
+                    .memberId(comment.getMember().getId())
+                    .build();
+        }
     }
 }
