@@ -6,9 +6,12 @@ import com.travel.toy3.domain.member.repository.MemberRepository;
 import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
 import com.travel.toy3.domain.trip.dto.TripDTO;
 import com.travel.toy3.domain.trip.dto.TripDetailDTO;
+import com.travel.toy3.domain.trip.entity.Comment;
 import com.travel.toy3.domain.trip.entity.Trip;
+import com.travel.toy3.domain.trip.repository.CommentRepository;
 import com.travel.toy3.domain.trip.repository.TripRepository;
 import com.travel.toy3.exception.CustomException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +39,9 @@ public class TripService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Transactional
     public CreateUpdateTrip.Response addTrip(
@@ -87,16 +93,24 @@ public class TripService {
 
     @Transactional
     public List<TripDTO> getAllTrips() {
-        return tripRepository.findAll()
-                .stream().map((Trip trip) -> TripDTO.fromEntity(trip))
-                .collect(Collectors.toList());
+        List<Trip> trips = tripRepository.findAll();
+        return trips.stream().map(trip -> {
+            Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
+            return TripDTO.fromEntity(trip, commentCount);
+        }).collect(Collectors.toList());
     }
+
 
     //여행 상세 조회
     @Transactional
     public TripDetailDTO getTripDetail(Long tripId) {
-        Trip trip = tripRepository.getById(tripId);
-        return TripDetailDTO.fromEntity(trip);
+        Optional<Trip> optionalTrip = tripRepository.findById(tripId);
+        if (!optionalTrip.isPresent()) {
+            throw new CustomException(INVALID_TRIP);
+        }
+        Trip trip = optionalTrip.get();
+        List<Comment> comments = commentRepository.findByTripId(tripId);
+        return TripDetailDTO.fromEntity(trip, comments);
     }
 
     //목적지로 검색
