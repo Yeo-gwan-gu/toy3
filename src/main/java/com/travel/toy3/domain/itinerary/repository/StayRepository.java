@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StayRepository extends JpaRepository<Stay, Long> {
+    Stay findByItinerary_Id(Long itineraryId);
 }

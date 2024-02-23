@@ -1,5 +1,6 @@
 package com.travel.toy3.domain.itinerary.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.travel.toy3.domain.itinerary.entity.Accommodation;
 import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.itinerary.entity.Moving;
@@ -13,6 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItineraryDTO {
     private Long tripId;
     private Long itineraryId;
