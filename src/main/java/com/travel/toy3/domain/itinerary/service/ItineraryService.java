@@ -142,4 +142,21 @@ public class ItineraryService {
 
         return itineraryDTOS;
     }
+
+    @Transactional(readOnly = true)
+    public ItineraryDTO getItineraryById(Long itineraryId) {
+        var optionalItinerary = itineraryRepository.findById(itineraryId);
+        Itinerary itinerary = optionalItinerary
+                .orElseThrow(
+                        () -> new CustomException(CustomErrorCode.INVALID_ITINERARY)
+                );
+
+        if (itinerary.getItineraryType() == ItineraryType.MOVING) {
+            return ItineraryDTO.fromMovingEntity(itinerary, movingRepository.findByItinerary_Id(itineraryId));
+        } else if (itinerary.getItineraryType() == ItineraryType.ACCOMMODATION) {
+            return ItineraryDTO.fromAccommodationEntity(itinerary, accommodationRepository.findByItinerary_Id(itineraryId));
+        } else {
+            return ItineraryDTO.fromStayEntity(itinerary, stayRepository.findByItinerary_Id(itineraryId));
+        }
+    }
 }

@@ -71,7 +71,7 @@ public class ItineraryRestController {
                 .body(response);
     }
 
-    // 특정 여행 id에 해당하는 전체 여정 조회
+    // 특정 여행 id에 해당하는 여정 전체 조회
     @GetMapping("/trip/{tripId}")
     public ResponseEntity<ApiResponse<List<ItineraryDTO>>> getAllItineraries(
             @PathVariable Long tripId
@@ -80,6 +80,22 @@ public class ItineraryRestController {
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
                 .data(itineraryService.getAllItineraries(tripId))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK.value())
+                .body(response);
+    }
+
+    // 특정 여정 id에 해당하는 여정 상세 조회
+    @GetMapping("/itinerary/{itineraryId}")
+    public ResponseEntity<ApiResponse<ItineraryDTO>> getItineraryById(
+            @PathVariable Long itineraryId
+    ) {
+        ApiResponse<ItineraryDTO> response = ApiResponse.<ItineraryDTO>builder()
+                .resultCode(HttpStatus.OK.value())
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .data(itineraryService.getItineraryById(itineraryId))
                 .build();
 
         return ResponseEntity
