@@ -16,13 +16,4 @@ public class AccommodationDTO {
     private String accommodationPlaceAddress; // 숙소 주소
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
-
-    public static AccommodationDTO fromEntity(@NonNull Accommodation accommodation) {
-        return AccommodationDTO.builder()
-                .accommodationPlaceName(accommodation.getAccommodationPlaceName())
-//                .accommodationPlaceAddress()
-                .checkIn(accommodation.getCheckIn())
-                .checkOut(accommodation.getCheckOut())
-                .build();
-    }
 }

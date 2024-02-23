@@ -21,16 +21,4 @@ public class MovingDTO {
     private String destinationPlaceAddress; // 도착지 주소
     private LocalDateTime departureDatetime;
     private LocalDateTime arrivalDatetime;
-
-    public static MovingDTO fromEntity(@NonNull Moving moving) {
-        return MovingDTO.builder()
-                .vehicle(moving.getVehicle())
-                .departurePlace(moving.getDeparturePlace())
-                .destinationPlace(moving.getDestinationPlace())
-//                        .departurePlaceAddress()
-//                        .destinationPlaceAddress()
-                .departureDatetime(moving.getDepartureDatetime())
-                .arrivalDatetime(moving.getArrivalDatetime())
-                .build();
-    }
 }

@@ -16,13 +16,4 @@ public class StayDTO {
     private String stayPlaceAddress; // 장소 주소
     private LocalDateTime arrivalDatetime;
     private LocalDateTime departureDatetime;
-
-    public static StayDTO fromEntity(@NonNull Stay stay) {
-        return StayDTO.builder()
-                .stayPlaceName(stay.getStayPlaceName())
-//                .stayPlaceAddress()
-                .arrivalDatetime(stay.getArrivalDatetime())
-                .departureDatetime(stay.getDepartureDatetime())
-                .build();
-    }
 }
