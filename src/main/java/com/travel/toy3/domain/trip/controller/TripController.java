@@ -71,11 +71,11 @@ public class TripController {
         return tripService.getTripDestination(destination);
     }
 
-    @GetMapping("/writer/{member-username}")
-    public Optional<List<CreateUpdateTrip.Response>> getUsernameTrip(@PathVariable("member-username") String username) {
-        log.info("===== 사용자로 조회 ======");
-        return tripService.getUsernameTrip(username);
-    }
+//    @GetMapping("/writer/{member-username}")
+//    public Optional<List<CreateUpdateTrip.Response>> getUsernameTrip(@PathVariable("member-username") String username) {
+//        log.info("===== 사용자로 조회 ======");
+//        return tripService.getTripComment(username);
+//    }
 
     @PutMapping("/{trip-id}")
     public CreateUpdateTrip.Response updateTrip(

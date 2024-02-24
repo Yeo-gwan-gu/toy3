@@ -1,8 +1,11 @@
 package com.travel.toy3.domain.trip.service;
 
+import com.travel.toy3.domain.itinerary.entity.Itinerary;
+import com.travel.toy3.domain.itinerary.repository.ItineraryRepository;
 import com.travel.toy3.domain.member.dto.CustomMember;
 import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.member.repository.MemberRepository;
+import com.travel.toy3.domain.trip.dto.CommentDTO;
 import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
 import com.travel.toy3.domain.trip.dto.TripDTO;
 import com.travel.toy3.domain.trip.dto.TripDetailDTO;
@@ -44,6 +47,9 @@ public class TripService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private ItineraryRepository itineraryRepository;
+
     @Transactional
     public CreateUpdateTrip.Response addTrip(
             CreateUpdateTrip.Request request
@@ -67,8 +73,6 @@ public class TripService {
         return CreateUpdateTrip.Response.fromEntity(trip);
     }
 
-
-    // tripId를 찾는 함수
     public Trip getByTripId(Long tripId) {
         Optional<Trip> optional = tripRepository.findById(tripId);
 
@@ -98,11 +102,12 @@ public class TripService {
             throw new CustomException(INVALID_TRIP);
         }
         Trip trip = optionalTrip.get();
+        List<Itinerary> itineraries = itineraryRepository.findByTrip_Id(tripId);
         List<Comment> comments = commentRepository.findByTripId(tripId);
         Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
         Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
 
-        return TripDetailDTO.fromEntity(trip,likeCount, comments, commentCount);
+        return TripDetailDTO.fromEntity(trip,itineraries ,likeCount, comments, commentCount);
     }
 
     //목적지로 검색
@@ -132,18 +137,31 @@ public class TripService {
         }
     }
 
-    //trip이 아니라 comment로 해야 할 것 같은데
-    @Transactional
-    public Optional<List<CreateUpdateTrip.Response>> getUsernameTrip(String username) {
-        Optional<List<Trip>> trips = tripRepository.findByTripDestination(username);
-
-        List<CreateUpdateTrip.Response> tripList = new ArrayList<>();
-        for (Trip trip : trips.get()) {
-            tripList.add(CreateUpdateTrip.Response.fromEntity(trip));
-        }
-        return Optional.ofNullable(tripList);
-    }
-
+//    @Transactional
+//    public Optional<List<CreateUpdateTrip.Response>> getTripComment(String comment) {
+//        List<Trip> trips = getByComment(comment);
+//        List<CommentDTO.Response> commentList = new ArrayList<>();
+//       //
+//        for (Trip trip : trips) {
+//
+//            List<Comment> comments = commentRepository.findByTripId(trip.getId());
+//
+//            CommentDTO.Response commentResponse = CommentDTO.Response.fromEntity(trip, comments);
+//
+//            commentList.add(commentResponse);
+//        }
+//        return commentList;
+//    }
+//
+//    private List<Trip> getByComment(String comment) {
+//        Optional<List<Trip>> optional = tripRepository.findByTripDestination(comment);
+//
+//        if (optional.isPresent()) {
+//            return optional.get();
+//        } else {
+//            throw new CustomException(INVALID_TRIP);
+//        }
+//    }
     @Transactional
     public CreateUpdateTrip.Response updateTrip(
             //Long memberId,
