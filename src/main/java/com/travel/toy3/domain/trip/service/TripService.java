@@ -4,9 +4,11 @@ import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.itinerary.repository.ItineraryRepository;
 import com.travel.toy3.domain.member.dto.CustomMember;
 import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
+import com.travel.toy3.domain.trip.dto.LikeDTO;
 import com.travel.toy3.domain.trip.dto.TripDTO;
 import com.travel.toy3.domain.trip.dto.TripDetailDTO;
 import com.travel.toy3.domain.trip.entity.Comment;
+import com.travel.toy3.domain.trip.entity.Like;
 import com.travel.toy3.domain.trip.entity.Trip;
 import com.travel.toy3.domain.trip.repository.CommentRepository;
 import com.travel.toy3.domain.trip.repository.LikeRepository;
@@ -60,11 +62,8 @@ public class TripService {
                 .tripDestination(request.getTripDestination())
                 .isDomestic(request.getIsDomestic())
                 .build();
-        Trip addTrip = tripRepository.save(trip);
+        tripRepository.save(trip);
 
-        if (addTrip == null) {
-            throw new CustomException(NO_EDIT_PERMISSION);
-        }
         return CreateUpdateTrip.Response.fromEntity(trip);
     }
 
@@ -92,7 +91,7 @@ public class TripService {
     @Transactional
     public TripDetailDTO getTripDetail(Long tripId) {
         Optional<Trip> optionalTrip = tripRepository.findById(tripId);
-        if (!optionalTrip.isPresent()) {
+        if (optionalTrip.isEmpty()) {
             throw new CustomException(INVALID_TRIP);
         }
         Trip trip = optionalTrip.get();
@@ -110,7 +109,6 @@ public class TripService {
         List<CreateUpdateTrip.Response> tripList = new ArrayList<>();
 
         for (Trip trip : trips) {
-
             CreateUpdateTrip.Response tripResponse = CreateUpdateTrip.Response.fromEntity(trip);
             Long likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y");
 
@@ -161,5 +159,20 @@ public class TripService {
             Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
             return TripDTO.fromEntity(trip, likeCount, commentCount);
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<TripDTO> getLikeTrips() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = ((CustomMember) authentication.getPrincipal()).getMember().getId();
+
+        List<Like> likes = likeRepository.findByMemberIdAndStatus(memberId, "Y");
+        List<Trip> likeTrips = likes.stream().map(Like::getTrip).toList();
+
+        return likeTrips.stream().map(trip -> {
+            Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
+            Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
+            return TripDTO.fromEntity(trip, likeCount, commentCount);
+        }).toList();
     }
 }

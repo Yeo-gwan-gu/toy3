@@ -11,10 +11,6 @@ import java.util.List;
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Like findByMemberAndTrip(Member member, Trip trip);
-
     Long countByTripIdAndStatus(Long tripId, String status);
-
-    List<Like> findByMemberIdAndStatus(Long memberId, String y);
-    List<Like> findByMemberId(Long memberId);
-
+    List<Like> findByMemberIdAndStatus(Long memberId, String status);
 }
