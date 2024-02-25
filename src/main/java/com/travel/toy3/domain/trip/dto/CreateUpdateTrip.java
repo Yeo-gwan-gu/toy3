@@ -1,5 +1,6 @@
 package com.travel.toy3.domain.trip.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.travel.toy3.domain.trip.entity.Trip;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -32,6 +33,7 @@ public class CreateUpdateTrip {
     @NoArgsConstructor
     @ToString
     @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
         private Long id;
         private Long memberId;
@@ -54,6 +56,7 @@ public class CreateUpdateTrip {
                     .isDomestic(trip.getIsDomestic())
                     .build();
         }
+
         public static Response fromLikeEntity(
                 @NotNull Trip trip,
                 @NotNull Long likeCount

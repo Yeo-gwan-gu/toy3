@@ -12,11 +12,10 @@ public class LikeDTO {
     @AllArgsConstructor
     @Builder
     @ToString
-    public static class likeRequest {
+    public static class Request {
         @NotNull
         private Long memberId;
         private Long tripId;
-        private String likeCount;
     }
 
     @Getter
@@ -25,26 +24,27 @@ public class LikeDTO {
     @AllArgsConstructor
     @Builder
     @ToString
-    public static class likeResponse{
+    public static class Response {
         @NotNull
         private Long memberId;
         @NotNull
-        private Integer tripId;
+        private Long tripId;
         private String likeStatus;
 
-        public static likeResponse fromLikeEntity(
-                Like like){
-            return likeResponse.builder()
+        public static Response fromLikeEntity(@NonNull Like like) {
+            return Response.builder()
+                    .memberId(like.getMember().getId())
+                    .tripId(like.getTrip().getId())
                     .likeStatus(like.getStatus())
                     .build();
         }
-        public static likeResponse fromLikeListEntity(
-                Like like,
-                Integer likeCount ){
-            return likeResponse.builder()
-                    .likeStatus(like.getStatus())
-                    .build();
-        }
+//        public static likeResponse fromLikeListEntity(
+//                Like like,
+//                Integer likeCount ){
+//            return likeResponse.builder()
+//                    .likeStatus(like.getStatus())
+//                    .build();
+//        }
     }
 
 }

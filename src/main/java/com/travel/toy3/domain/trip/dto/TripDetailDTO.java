@@ -1,5 +1,6 @@
 package com.travel.toy3.domain.trip.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.travel.toy3.domain.itinerary.dto.CreateItinerary;
 import com.travel.toy3.domain.itinerary.entity.Itinerary;
 import com.travel.toy3.domain.trip.entity.Comment;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TripDetailDTO {
 
     private Long id;
@@ -49,6 +51,7 @@ public class TripDetailDTO {
 
         return TripDetailDTO.builder()
                 .id(trip.getId())
+                .username(trip.getMember().getUsername())
                 .tripName(trip.getTripName())
                 .tripDepartureDate(trip.getTripDepartureDate())
                 .tripArrivalDate(trip.getTripArrivalDate())

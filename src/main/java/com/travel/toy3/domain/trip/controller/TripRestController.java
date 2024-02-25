@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/trips")
-public class TripController {
+public class TripRestController {
 
     @Autowired
     private TripService tripService;
@@ -68,12 +68,26 @@ public class TripController {
 
     @PutMapping("/{trip-id}")
     public CreateUpdateTrip.Response updateTrip(
-//            @PathVariable Long memberId,
             @PathVariable("trip-id") Long tripId,
             @RequestBody final CreateUpdateTrip.Request request
     ) {
         log.info(" ===== 여행 수정 ===== ");
         return tripService.updateTrip(tripId, request);
+    }
+
+
+    @GetMapping("/like")
+    public ResponseEntity<ApiResponse<List<TripDTO>>> getLikeTrips(
+            @PathVariable("trip-id") Long tripId
+    ) {
+        List<TripDTO> trips = tripService.getLikeTrips();
+        ApiResponse<List<TripDTO>> response = ApiResponse.<List<TripDTO>>builder()
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .resultCode(HttpStatus.OK.value())
+                .data(trips)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/own")

@@ -33,6 +33,7 @@ public class TripDTO {
     ) {
         return TripDTO.builder()
                 .id(trip.getId())
+                .username(trip.getMember().getUsername())
                 .tripName(trip.getTripName())
                 .tripDepartureDate(trip.getTripDepartureDate())
                 .tripArrivalDate(trip.getTripArrivalDate())
