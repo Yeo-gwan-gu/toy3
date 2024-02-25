@@ -10,18 +10,22 @@ import com.travel.toy3.domain.itinerary.repository.ItineraryRepository;
 import com.travel.toy3.domain.itinerary.repository.MovingRepository;
 import com.travel.toy3.domain.itinerary.repository.StayRepository;
 import com.travel.toy3.domain.itinerary.type.ItineraryType;
+import com.travel.toy3.domain.member.dto.CustomMember;
 import com.travel.toy3.domain.trip.entity.Trip;
 import com.travel.toy3.domain.trip.repository.TripRepository;
 import com.travel.toy3.exception.CustomErrorCode;
 import com.travel.toy3.exception.CustomException;
 import com.travel.toy3.util.Geocoding;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ItineraryService {
@@ -56,6 +60,19 @@ public class ItineraryService {
 
     @Transactional
     public CreateMoving.Response addMoving(Long tripId, CreateMoving.Request request) throws IOException {
+        var optionalTrip = tripRepository.findById(tripId);
+        Trip trip = optionalTrip
+                .orElseThrow(
+                        () -> new CustomException(CustomErrorCode.INVALID_TRIP)
+                );
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = ((CustomMember) authentication.getPrincipal()).getMember().getId();
+
+        if (!Objects.equals(trip.getMember().getId(), memberId)) {
+            throw new CustomException(CustomErrorCode.NO_ADD_ITINERARY_PERMISSION);
+        }
+
         CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
                 .itineraryType(request.getItineraryType())
                 .itineraryName(request.getItineraryName())

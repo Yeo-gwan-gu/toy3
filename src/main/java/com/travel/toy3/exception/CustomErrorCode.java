@@ -32,6 +32,7 @@ public enum CustomErrorCode {
 
     // 권한 없음
     NO_ACCESS_PERMISSION(HttpStatus.UNAUTHORIZED.value(), "접근 권한이 없습니다. 로그인이 필요합니다."),
+    NO_ADD_ITINERARY_PERMISSION(HttpStatus.FORBIDDEN.value(), "여정 등록 권한이 없습니다. 본인이 작성한 여행 정보에만 여정 등록이 가능합니다."),
     NO_EDIT_PERMISSION(HttpStatus.FORBIDDEN.value(), "수정 권한이 없습니다. 본인이 작성한 정보만 수정이 가능합니다."),
 
     // 우리가 정의한 예외가 아닌 경우
