@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping
+@RequestMapping("/api/like")
 public class LikeRestController {
 
     @Autowired
     private LikeService likeService;
 
-    @PostMapping("/api/like/{trip-id}")
+    @PostMapping("/{trip-id}")
     public LikeDTO.Response addLike(
             @PathVariable("trip-id") Long tripId
     ) {
@@ -26,7 +26,7 @@ public class LikeRestController {
         return likeService.addLike(tripId);
     }
 
-    @PutMapping("/api/like/{trip-id}")
+    @PutMapping("/{trip-id}")
     public LikeDTO.Response updateLike(
             @PathVariable("trip-id") Long tripId
     ) {
