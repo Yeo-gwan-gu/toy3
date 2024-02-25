@@ -1,6 +1,7 @@
 package com.travel.toy3.domain.trip.service;
 
 import com.travel.toy3.domain.member.dto.CustomMember;
+import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.trip.dto.LikeDTO;
 import com.travel.toy3.domain.trip.entity.Like;
 import com.travel.toy3.domain.trip.entity.Trip;
@@ -15,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,7 +59,6 @@ public class LikeService {
             likeRepository.save(existingLike);
             return LikeDTO.likeResponse.fromLikeEntity(existingLike);
         }
-
     }
 
     @Transactional
@@ -74,5 +78,18 @@ public class LikeService {
         Like updatedLike = likeRepository.save(existingLike);
 
         return LikeDTO.likeResponse.fromLikeEntity(updatedLike);
+    }
+    @Transactional
+    public List<LikeDTO.likeResponse> listLikedTrips() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomMember customMember = (CustomMember) authentication.getPrincipal();
+
+        List<Like> likedTrips = likeRepository.findByMemberIdAndStatus(customMember.getMember().getId(), "Y");
+
+        List<LikeDTO.likeResponse> likeResponses = likedTrips.stream()
+                .map(LikeDTO.likeResponse::fromLikeEntity)
+                .collect(Collectors.toList());
+
+        return likeResponses;
     }
 }
