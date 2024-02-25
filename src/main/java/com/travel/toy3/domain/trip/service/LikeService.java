@@ -16,6 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -54,7 +57,6 @@ public class LikeService {
             likeRepository.save(existingLike);
             return LikeDTO.likeResponse.fromLikeEntity(existingLike);
         }
-
     }
 
     @Transactional
@@ -74,5 +76,20 @@ public class LikeService {
         Like updatedLike = likeRepository.save(existingLike);
 
         return LikeDTO.likeResponse.fromLikeEntity(updatedLike);
+    }
+    @Transactional
+    public List<LikeDTO.likeResponse> listLikedTrips(
+           // Long tripId
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomMember customMember = (CustomMember) authentication.getPrincipal();
+
+       // List<Like> likedTrips = likeRepository.findByMember_IdAndStatus(customMember.getMember().getId(), "Y");
+        List<Like> ll = likeRepository.findByMemberId(customMember.getMember().getId());
+        List<LikeDTO.likeResponse> likeResponses = ll.stream()
+                .map(LikeDTO.likeResponse::fromLikeEntity)
+                .collect(Collectors.toList());
+
+        return likeResponses;
     }
 }

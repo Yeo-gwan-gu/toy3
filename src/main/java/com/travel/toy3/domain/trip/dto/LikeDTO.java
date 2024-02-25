@@ -38,6 +38,13 @@ public class LikeDTO {
                     .likeStatus(like.getStatus())
                     .build();
         }
+        public static likeResponse fromLikeListEntity(
+                Like like,
+                Integer likeCount ){
+            return likeResponse.builder()
+                    .likeStatus(like.getStatus())
+                    .build();
+        }
     }
 
 }

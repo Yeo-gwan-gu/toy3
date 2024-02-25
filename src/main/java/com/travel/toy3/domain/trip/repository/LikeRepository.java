@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Like findByMemberAndTrip(Member member, Trip trip);
 
     Long countByTripIdAndStatus(Long tripId, String status);
+
+    List<Like> findByMemberIdAndStatus(Long memberId, String y);
+    List<Like> findByMemberId(Long memberId);
+
 }
