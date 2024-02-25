@@ -1,7 +1,6 @@
 package com.travel.toy3.domain.trip.service;
 
 import com.travel.toy3.domain.member.dto.CustomMember;
-import com.travel.toy3.domain.member.entity.Member;
 import com.travel.toy3.domain.trip.dto.LikeDTO;
 import com.travel.toy3.domain.trip.entity.Like;
 import com.travel.toy3.domain.trip.entity.Trip;
@@ -17,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
