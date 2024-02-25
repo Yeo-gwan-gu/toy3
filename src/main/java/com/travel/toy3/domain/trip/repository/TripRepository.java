@@ -10,6 +10,8 @@ import java.util.Optional;
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
     Optional<List<Trip>> findByTripDestination(String destination);
-    Optional<List<Trip>> findByTripComment(String Comment);
+//    Optional<List<Trip>> findByTripComment(String Comment);
     Optional<Trip> findById(Long tripId);
+
+    List<Trip> findByMemberId(Long memberId);
 }

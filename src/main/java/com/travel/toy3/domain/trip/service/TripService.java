@@ -89,7 +89,7 @@ public class TripService {
         return trips.stream().map(trip -> {
             Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
             Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
-            return TripDTO.fromEntity(trip,likeCount, commentCount);
+            return TripDTO.fromEntity(trip, likeCount, commentCount);
         }).collect(Collectors.toList());
     }
 
@@ -107,7 +107,7 @@ public class TripService {
         Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
         Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
 
-        return TripDetailDTO.fromEntity(trip,itineraries ,likeCount, comments, commentCount);
+        return TripDetailDTO.fromEntity(trip, itineraries, likeCount, comments, commentCount);
     }
 
     //목적지로 검색
@@ -137,7 +137,7 @@ public class TripService {
         }
     }
 
-//    @Transactional
+    //    @Transactional
 //    public Optional<List<CreateUpdateTrip.Response>> getTripComment(String comment) {
 //        List<Trip> trips = getByComment(comment);
 //        List<CommentDTO.Response> commentList = new ArrayList<>();
@@ -181,5 +181,22 @@ public class TripService {
         trip.setTripArrivalDate(request.getTripArrivalDate());
         trip.setTripDestination(request.getTripDestination());
         trip.setIsDomestic(request.getIsDomestic());
+    }
+
+    @Transactional
+    public List<TripDTO> getOwnTrips() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 현재 로그인한 사용자의 ID 가져오기
+        Long memberId = ((CustomMember) authentication.getPrincipal()).getMember().getId();
+
+        // 해당 사용자가 작성한 여행만 조회
+        List<Trip> trips = tripRepository.findByMemberId(memberId);
+
+        return trips.stream().map(trip -> {
+            Integer likeCount = likeRepository.countByTripIdAndStatus(trip.getId(), "Y").intValue();
+            Integer commentCount = commentRepository.countByTripId(trip.getId()).intValue();
+            return TripDTO.fromEntity(trip, likeCount, commentCount);
+        }).collect(Collectors.toList());
     }
 }

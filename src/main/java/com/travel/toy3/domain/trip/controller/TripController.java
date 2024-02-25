@@ -86,4 +86,16 @@ public class TripController {
         log.info(" ===== 여행 수정 ===== ");
         return tripService.updateTrip(tripId, request);
     }
+
+    @GetMapping("/own")
+    public ResponseEntity<ApiResponse<List<TripDTO>>> getOwnTrips() {
+        List<TripDTO> trips = tripService.getOwnTrips();
+        log.info("===== 여행 전체 조회 ======");
+        ApiResponse<List<TripDTO>> response = ApiResponse.<List<TripDTO>>builder()
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .resultCode(HttpStatus.OK.value())
+                .data(trips)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }
