@@ -36,7 +36,10 @@ public class LikeController {
     }
 
     @GetMapping("/api/trips/like")
-    public List<LikeDTO.likeResponse> listLikedTrips() {
+    public List<LikeDTO.likeResponse> listLikedTrips(
+//            @PathVariable("trip-id") Long tripId
+    ) {
+//        return likeService.listLikedTrips(tripId);
         return likeService.listLikedTrips();
     }
 }

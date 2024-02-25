@@ -152,7 +152,6 @@ public class TripService {
     @Transactional
     public List<TripDTO> getOwnTrips() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         Long memberId = ((CustomMember) authentication.getPrincipal()).getMember().getId();
 
         List<Trip> trips = tripRepository.findByMemberId(memberId);

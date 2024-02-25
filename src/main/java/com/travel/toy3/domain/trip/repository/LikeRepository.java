@@ -15,5 +15,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Long countByTripIdAndStatus(Long tripId, String status);
 
     List<Like> findByMemberIdAndStatus(Long memberId, String y);
+    List<Like> findByMemberId(Long memberId);
 
 }
