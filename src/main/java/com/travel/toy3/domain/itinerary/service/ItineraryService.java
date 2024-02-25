@@ -161,4 +161,120 @@ public class ItineraryService {
             return ItineraryDTO.fromStayEntity(itinerary, stayRepository.findByItinerary_Id(itineraryId));
         }
     }
+
+    private Itinerary updateItineraryFromRequest(Itinerary itinerary, CreateItinerary.Request request) {
+        return Itinerary.builder()
+                .id(itinerary.getId())
+                .trip(itinerary.getTrip())
+                .itineraryType(request.getItineraryType())
+                .itineraryName(request.getItineraryName())
+                .createdAt(itinerary.getCreatedAt()) // 기존 createdAt 사용
+                .build();
+    }
+
+    @Transactional
+    public CreateMoving.Response updateMoving(Long itineraryId, CreateMoving.Request request) throws IOException {
+        Itinerary itinerary = itineraryRepository.findById(itineraryId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.INVALID_ITINERARY));
+
+        Moving moving = movingRepository.findMovingByItinerary_Id(itineraryId);
+
+        CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
+                .itineraryType(request.getItineraryType())
+                .itineraryName(request.getItineraryName())
+                .build();
+        Itinerary updatedItinerary = updateItineraryFromRequest(itinerary, itineraryRequest);
+        Moving updatedMoving = updateMovingFromRequest(moving, request);
+        itineraryRepository.save(updatedItinerary);
+        movingRepository.save(updatedMoving);
+
+        return CreateMoving.Response.fromEntity(
+                updatedItinerary,
+                updatedMoving);
+    }
+
+    private Moving updateMovingFromRequest(Moving moving, CreateMoving.Request request) throws IOException {
+        return Moving.builder()
+                .id(moving.getId())
+                .itinerary(moving.getItinerary())
+                .vehicle(request.getVehicle())
+                .departurePlace(request.getDeparturePlace())
+                .destinationPlace(request.getDestinationPlace())
+                .departurePlaceLongitude(Geocoding.getGeoInfo(request.getDeparturePlaceAddress()).getLongitude())
+                .departurePlaceLatitude(Geocoding.getGeoInfo(request.getDeparturePlaceAddress()).getLatitude())
+                .destinationPlaceLongitude(Geocoding.getGeoInfo(request.getDestinationPlaceAddress()).getLongitude())
+                .destinationPlaceLatitude(Geocoding.getGeoInfo(request.getDestinationPlaceAddress()).getLatitude())
+                .departureDatetime(request.getDepartureDatetime())
+                .arrivalDatetime(request.getArrivalDatetime())
+                .createdAt(moving.getCreatedAt()) // 기존 createdAt 사용
+                .build();
+    }
+
+    @Transactional
+    public CreateAccommodation.Response updateAccommodation(Long itineraryId, CreateAccommodation.Request request) throws IOException {
+        Itinerary itinerary = itineraryRepository.findById(itineraryId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.INVALID_ITINERARY));
+
+        Accommodation accommodation = accommodationRepository.findAccommodationByItinerary_Id(itineraryId);
+
+        CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
+                .itineraryType(request.getItineraryType())
+                .itineraryName(request.getItineraryName())
+                .build();
+        Itinerary updatedItinerary = updateItineraryFromRequest(itinerary, itineraryRequest);
+        Accommodation updatedAccommodation = updateAccommodationFromRequest(accommodation, request);
+        itineraryRepository.save(updatedItinerary);
+        accommodationRepository.save(updatedAccommodation);
+
+        return CreateAccommodation.Response.fromEntity(
+                updatedItinerary,
+                updatedAccommodation);
+    }
+
+    private Accommodation updateAccommodationFromRequest(Accommodation accommodation, CreateAccommodation.Request request) throws IOException {
+        return Accommodation.builder()
+                .id(accommodation.getId())
+                .itinerary(accommodation.getItinerary())
+                .accommodationPlaceName(request.getAccommodationPlaceName())
+                .accommodationPlaceLatitude(Geocoding.getGeoInfo(request.getAccommodationPlaceAddress()).getLatitude())
+                .accommodationPlaceLongitude(Geocoding.getGeoInfo(request.getAccommodationPlaceAddress()).getLongitude())
+                .checkIn(request.getCheckIn())
+                .checkOut(request.getCheckOut())
+                .createdAt(accommodation.getCreatedAt()) // 기존 createdAt 사용
+                .build();
+    }
+
+    @Transactional
+    public CreateStay.Response updateStay(Long itineraryId, CreateStay.Request request) throws IOException {
+        Itinerary itinerary = itineraryRepository.findById(itineraryId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.INVALID_ITINERARY));
+
+        Stay stay = stayRepository.findStayByItinerary_Id(itineraryId);
+
+        CreateItinerary.Request itineraryRequest = CreateItinerary.Request.builder()
+                .itineraryType(request.getItineraryType())
+                .itineraryName(request.getItineraryName())
+                .build();
+        Itinerary updatedItinerary = updateItineraryFromRequest(itinerary, itineraryRequest);
+        Stay updatedStay = updateStayFromRequest(stay, request);
+        itineraryRepository.save(updatedItinerary);
+        stayRepository.save(updatedStay);
+
+        return CreateStay.Response.fromEntity(
+                updatedItinerary,
+                updatedStay);
+    }
+
+    private Stay updateStayFromRequest(Stay stay, CreateStay.Request request) throws IOException {
+        return Stay.builder()
+                .id(stay.getId())
+                .itinerary(stay.getItinerary())
+                .stayPlaceName(request.getStayPlaceName())
+                .stayPlaceLatitude(Geocoding.getGeoInfo(request.getStayPlaceAddress()).getLatitude())
+                .stayPlaceLongitude(Geocoding.getGeoInfo(request.getStayPlaceAddress()).getLongitude())
+                .departureDatetime(request.getDepartureDatetime())
+                .arrivalDatetime(request.getArrivalDatetime())
+                .createdAt(stay.getCreatedAt()) // 기존 createdAt 사용
+                .build();
+    }
 }

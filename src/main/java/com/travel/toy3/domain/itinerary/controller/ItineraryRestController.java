@@ -1,7 +1,7 @@
 package com.travel.toy3.domain.itinerary.controller;
 
-import com.travel.toy3.domain.itinerary.dto.CreateMoving;
 import com.travel.toy3.domain.itinerary.dto.CreateAccommodation;
+import com.travel.toy3.domain.itinerary.dto.CreateMoving;
 import com.travel.toy3.domain.itinerary.dto.CreateStay;
 import com.travel.toy3.domain.itinerary.dto.ItineraryDTO;
 import com.travel.toy3.domain.itinerary.service.ItineraryService;
@@ -97,6 +97,57 @@ public class ItineraryRestController {
                 .resultCode(HttpStatus.OK.value())
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
                 .data(itineraryService.getItineraryById(itineraryId))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK.value())
+                .body(response);
+    }
+
+    // 여정 수정 - 이동
+    @PutMapping("/itinerary/{itineraryId}/moving")
+    public ResponseEntity<ApiResponse<CreateMoving.Response>> updateMoving(
+            @PathVariable Long itineraryId,
+            @RequestBody CreateMoving.Request request
+    ) throws IOException {
+        ApiResponse<CreateMoving.Response> response = ApiResponse.<CreateMoving.Response>builder()
+                .resultCode(HttpStatus.OK.value())
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .data(itineraryService.updateMoving(itineraryId, request))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK.value())
+                .body(response);
+    }
+
+    // 여정 수정 - 숙박
+    @PutMapping("/itinerary/{itineraryId}/accommodation")
+    public ResponseEntity<ApiResponse<CreateAccommodation.Response>> updateAccommodation(
+            @PathVariable Long itineraryId,
+            @RequestBody CreateAccommodation.Request request
+    ) throws IOException {
+        ApiResponse<CreateAccommodation.Response> response = ApiResponse.<CreateAccommodation.Response>builder()
+                .resultCode(HttpStatus.OK.value())
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .data(itineraryService.updateAccommodation(itineraryId, request))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK.value())
+                .body(response);
+    }
+
+    // 여정 수정 - 체류
+    @PutMapping("/itinerary/{itineraryId}/stay")
+    public ResponseEntity<ApiResponse<CreateStay.Response>> updateStay(
+            @PathVariable Long itineraryId,
+            @RequestBody CreateStay.Request request
+    ) throws IOException {
+        ApiResponse<CreateStay.Response> response = ApiResponse.<CreateStay.Response>builder()
+                .resultCode(HttpStatus.OK.value())
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .data(itineraryService.updateStay(itineraryId, request))
                 .build();
 
         return ResponseEntity
