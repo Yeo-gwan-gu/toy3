@@ -1,8 +1,5 @@
 package com.travel.toy3.domain.trip.controller;
 
-import com.travel.toy3.domain.member.dto.CustomMember;
-import com.travel.toy3.domain.member.entity.Member;
-import com.travel.toy3.domain.trip.dto.CommentDTO;
 import com.travel.toy3.domain.trip.dto.CreateUpdateTrip;
 import com.travel.toy3.domain.trip.dto.TripDTO;
 import com.travel.toy3.domain.trip.dto.TripDetailDTO;
@@ -17,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -62,7 +58,6 @@ public class TripController {
         return ResponseEntity.ok(response);
     }
 
-    //500 에러 나고 있음
     @GetMapping("/destination/{trip-destination}")
     public List<CreateUpdateTrip.Response> getDestinationTrip(
             @PathVariable("trip-destination") final String destination
@@ -70,12 +65,6 @@ public class TripController {
         log.info("===== 특정 여행지로 조회 ======");
         return tripService.getTripDestination(destination);
     }
-
-//    @GetMapping("/writer/{member-username}")
-//    public Optional<List<CreateUpdateTrip.Response>> getUsernameTrip(@PathVariable("member-username") String username) {
-//        log.info("===== 사용자로 조회 ======");
-//        return tripService.getTripComment(username);
-//    }
 
     @PutMapping("/{trip-id}")
     public CreateUpdateTrip.Response updateTrip(
