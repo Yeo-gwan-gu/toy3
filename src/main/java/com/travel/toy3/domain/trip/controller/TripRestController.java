@@ -77,9 +77,7 @@ public class TripRestController {
 
 
     @GetMapping("/like")
-    public ResponseEntity<ApiResponse<List<TripDTO>>> getLikeTrips(
-            @PathVariable("trip-id") Long tripId
-    ) {
+    public ResponseEntity<ApiResponse<List<TripDTO>>> getLikeTrips() {
         List<TripDTO> trips = tripService.getLikeTrips();
         ApiResponse<List<TripDTO>> response = ApiResponse.<List<TripDTO>>builder()
                 .resultMessage(HttpStatus.OK.getReasonPhrase())
