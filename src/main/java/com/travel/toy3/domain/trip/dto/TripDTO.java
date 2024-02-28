@@ -1,7 +1,5 @@
 package com.travel.toy3.domain.trip.dto;
 
-import com.travel.toy3.domain.member.entity.Member;
-import com.travel.toy3.domain.trip.entity.Like;
 import com.travel.toy3.domain.trip.entity.Trip;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

@@ -117,7 +117,6 @@ public class TripService {
         }
         return tripList;
     }
-
     private List<Trip> getByDestination(String destination) {
         Optional<List<Trip>> optional = tripRepository.findByTripDestination(destination);
 
