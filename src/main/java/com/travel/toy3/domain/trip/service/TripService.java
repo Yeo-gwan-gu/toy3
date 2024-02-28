@@ -36,7 +36,7 @@ import static com.travel.toy3.exception.CustomErrorCode.NO_EDIT_PERMISSION;
 public class TripService {
 
     @Autowired
-    private TripRepository tripRepository;
+    private static TripRepository tripRepository;
 
     @Autowired
     private LikeRepository likeRepository;

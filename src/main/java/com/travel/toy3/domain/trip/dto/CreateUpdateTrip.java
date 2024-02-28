@@ -36,7 +36,6 @@ public class CreateUpdateTrip {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
         private Long id;
-        private Long memberId;
         private String tripName;
         private LocalDate tripDepartureDate;
         private LocalDate tripArrivalDate;
