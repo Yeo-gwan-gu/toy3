@@ -30,6 +30,20 @@ public class LikeService {
     @Autowired
     private TripService tripService;
 
+
+//    @Transactional
+//    public void addLike(Long tripId, Member member) {
+//
+//        Trip trip = TripService.getByTripId(tripId);
+//        if (!likeRepository.existsByMemberAndTrip(member, trip)) {
+//            trip.setLikeCount(trip.getLikeCount() + 1);
+//            likeRepository.save(new Like(member, trip));
+//        } else {
+//            trip.setLikeCount(trip.getLikeCount() - 1);
+//            likeRepository.deleteByMemberAndTrip(member, trip);
+//        }
+//    }
+
     @Transactional
     public LikeDTO.Response addLike(
             Long tripId
@@ -54,6 +68,20 @@ public class LikeService {
             likeRepository.save(existingLike);
             return LikeDTO.Response.fromLikeEntity(existingLike);
         }
+    }
+    @Transactional
+    public LikeDTO.likeResponse updateLike(
+            Long tripId,
+            LikeDTO.likeRequest request
+    ) {
+        Trip existingTrip = tripService.getByTripId(tripId);
+        Like likeEntity = convertTripToLike(existingTrip);
+        return LikeDTO.likeResponse.fromLikeEntity(likeEntity);
+    }
+    private Like convertTripToLike(Trip trip) {
+        Like like = new Like();
+        like.setTrip(trip);
+        return like;
     }
 
     @Transactional

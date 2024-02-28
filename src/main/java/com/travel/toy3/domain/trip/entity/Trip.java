@@ -3,6 +3,7 @@ package com.travel.toy3.domain.trip.entity;
 import com.travel.toy3.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,10 +36,11 @@ public class Trip {
     private String tripDestination; // 여행지
     private Boolean isDomestic; // 국내외 여부
 
-    private Integer likeCount=0;
+    @ColumnDefault("0")
+    private Integer likeCount;
 
-    @OneToMany(mappedBy = "trip",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<Like> likes = new ArrayList<>();
+//    @OneToMany(mappedBy = "trip",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    private List<Like> likes = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdAt;
