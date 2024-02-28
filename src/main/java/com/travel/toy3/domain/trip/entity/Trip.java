@@ -3,15 +3,12 @@ package com.travel.toy3.domain.trip.entity;
 import com.travel.toy3.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -35,12 +32,6 @@ public class Trip {
     private LocalDate tripArrivalDate; // 여행 도착 날짜
     private String tripDestination; // 여행지
     private Boolean isDomestic; // 국내외 여부
-
-    @ColumnDefault("0")
-    private Integer likeCount;
-
-//    @OneToMany(mappedBy = "trip",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-//    private List<Like> likes = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdAt;
